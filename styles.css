@@ -1,0 +1,272 @@
+.local-courseprogresspro {
+    margin: 1rem 0;
+    padding: 0.85rem 1rem;
+    border: 1px solid #d9e2f2;
+    border-radius: 0.5rem;
+    background: #f8fbff;
+}
+
+.local-courseprogresspro__title {
+    margin-bottom: 0.6rem;
+    color: #1f2937;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.local-courseprogresspro__track {
+    width: 100%;
+    height: 0.9rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: #e5edf7;
+}
+
+.local-courseprogresspro__fill {
+    display: block;
+    height: 100%;
+    width: 0;
+    border-radius: inherit;
+    background: linear-gradient(90deg, #0f6cbf 0%, #3bb273 100%);
+}
+
+.local-courseprogresspro__value {
+    color: #4b5563;
+    font-size: 0.92rem;
+    font-weight: 600;
+}
+
+.local-courseprogresspro__meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.55rem;
+}
+
+.local-courseprogresspro__max {
+    color: #6b7280;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.local-courseprogresspro__count {
+    margin-top: 0.35rem;
+    color: #374151;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.local-courseprogresspro__actions {
+    margin-top: 0.55rem;
+}
+
+.local-courseprogresspro__button {
+    border: 1px solid #c8d8ee;
+    border-radius: 999px;
+    background: #fff;
+    color: #0f6cbf;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 0.45rem 0.8rem;
+}
+
+.local-courseprogresspro__button:hover,
+.local-courseprogresspro__button:focus {
+    background: #eef6ff;
+}
+
+.local-courseprogresspro__modal[hidden] {
+    display: none;
+}
+
+.local-courseprogresspro__modal {
+    position: fixed;
+    inset: 0;
+    z-index: 1050;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.local-courseprogresspro__backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgba(15, 23, 42, 0.45);
+}
+
+.local-courseprogresspro__modal-card {
+    position: relative;
+    width: min(100%, 38rem);
+    max-height: 80vh;
+    overflow: auto;
+    border-radius: 0.8rem;
+    background: #fff;
+    box-shadow: 0 20px 50px rgba(15, 23, 42, 0.22);
+    padding: 1rem;
+}
+
+.local-courseprogresspro__modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 0.8rem;
+}
+
+.local-courseprogresspro__modal-title {
+    color: #111827;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.local-courseprogresspro__close {
+    border: 0;
+    background: none;
+    color: #6b7280;
+    cursor: pointer;
+    font-size: 1.7rem;
+    line-height: 1;
+    padding: 0;
+}
+
+.local-courseprogresspro__pending-list {
+    margin: 0;
+    padding: 0 0 0 1.1rem;
+    list-style: none;
+    border-left: 2px dashed #cbd5e1;
+}
+
+.local-courseprogresspro__pending-item + .local-courseprogresspro__pending-item {
+    margin-top: 0.75rem;
+}
+
+.local-courseprogresspro__pending-item--timeline {
+    position: relative;
+    margin-left: 0.45rem;
+}
+
+.local-courseprogresspro__dot {
+    position: absolute;
+    top: 0.45rem;
+    left: -1.05rem;
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 50%;
+    background: #16a34a;
+    box-shadow: 0 0 0 3px #dcfce7;
+}
+
+.local-courseprogresspro__pending-item--timeline.is-locked .local-courseprogresspro__dot {
+    background: #ea580c;
+    box-shadow: 0 0 0 3px #ffedd5;
+}
+
+.local-courseprogresspro__pending-content {
+    border: 1px solid #d9e2f2;
+    border-radius: 0.7rem;
+    background: #fff;
+    padding: 0.7rem 0.8rem;
+}
+
+.local-courseprogresspro__pending-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+}
+
+.local-courseprogresspro__pending-name {
+    color: #0f172a;
+    font-size: 0.95rem;
+    font-weight: 700;
+}
+
+.local-courseprogresspro__pending-type {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+    padding: 0.1rem 0.55rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #0f172a;
+    background: #dbeafe;
+}
+
+.local-courseprogresspro__pending-type--quiz,
+.local-courseprogresspro__pending-type--assign,
+.local-courseprogresspro__pending-type--assignment {
+    color: #7c2d12;
+    background: #ffedd5;
+}
+
+.local-courseprogresspro__pending-type--forum,
+.local-courseprogresspro__pending-type--feedback,
+.local-courseprogresspro__pending-type--data {
+    color: #4c1d95;
+    background: #ede9fe;
+}
+
+.local-courseprogresspro__pending-type--resource,
+.local-courseprogresspro__pending-type--url,
+.local-courseprogresspro__pending-type--page,
+.local-courseprogresspro__pending-type--book,
+.local-courseprogresspro__pending-type--folder {
+    color: #0c4a6e;
+    background: #e0f2fe;
+}
+
+.local-courseprogresspro__pending-detail {
+    margin-top: 0.35rem;
+    color: #334155;
+    font-size: 0.88rem;
+}
+
+.local-courseprogresspro__pending-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.6rem;
+    margin-top: 0.55rem;
+}
+
+.local-courseprogresspro__pending-status {
+    border-radius: 999px;
+    padding: 0.12rem 0.55rem;
+    font-size: 0.72rem;
+    font-weight: 700;
+}
+
+.local-courseprogresspro__pending-status.is-available {
+    color: #166534;
+    background: #dcfce7;
+}
+
+.local-courseprogresspro__pending-status.is-locked {
+    color: #9a3412;
+    background: #ffedd5;
+}
+
+.local-courseprogresspro__pending-link {
+    color: #0f6cbf;
+    font-size: 0.84rem;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.local-courseprogresspro__pending-link:hover,
+.local-courseprogresspro__pending-link:focus {
+    text-decoration: underline;
+}
+
+.local-courseprogresspro__empty {
+    margin: 0;
+    color: #4b5563;
+}
+
+body.local-courseprogresspro-modal-open {
+    overflow: hidden;
+}
