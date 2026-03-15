@@ -63,11 +63,11 @@ jobs:
             composer-${{ runner.os }}-${{ matrix.php }}-
             composer-${{ runner.os }}-
 
-      - name: Install moodle-plugin-ci
+      - name: Install moodle-plugin-ci outside repository
         run: |
-          composer create-project --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci 4.5.10
-          echo "$(cd ci/bin && pwd)" >> $GITHUB_PATH
-          echo "$(cd ci/vendor/bin && pwd)" >> $GITHUB_PATH
+          composer create-project --no-dev --prefer-dist moodlehq/moodle-plugin-ci /tmp/moodle-plugin-ci 4.5.10
+          echo "/tmp/moodle-plugin-ci/bin" >> $GITHUB_PATH
+          echo "/tmp/moodle-plugin-ci/vendor/bin" >> $GITHUB_PATH
 
       - name: Wait for PostgreSQL
         run: |
