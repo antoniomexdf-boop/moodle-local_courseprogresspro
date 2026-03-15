@@ -2,6 +2,13 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.11] - 2026-03-15
+
+### Fixed
+
+- Updated AMD JSDoc blocks to the expected `@returns` style and further reduced `buildContext()` complexity with small helper functions.
+- Kept the promise chain explicit and synchronized the build artifact after the frontend code-quality pass.
+
 ## [0.7.10] - 2026-03-15
 
 ### Fixed

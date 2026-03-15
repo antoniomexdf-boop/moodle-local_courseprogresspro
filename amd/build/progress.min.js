@@ -26,7 +26,7 @@ define(['core/templates'], function(Templates) {
      *
      * @param {Object} config Widget configuration.
      * @param {string} key Configuration key.
-     * @return {string}
+     * @returns {string}
      */
     function getConfigString(config, key) {
         return config && config[key] ? config[key] : '';
@@ -38,7 +38,7 @@ define(['core/templates'], function(Templates) {
      * @param {Object} config Widget configuration.
      * @param {string} key Configuration key.
      * @param {boolean} fallback Default value.
-     * @return {boolean}
+     * @returns {boolean}
      */
     function getConfigFlag(config, key, fallback) {
         if (!config || typeof config[key] === 'undefined') {
@@ -51,7 +51,7 @@ define(['core/templates'], function(Templates) {
     /**
      * Creates or reuses the root widget container.
      *
-     * @return {HTMLElement}
+     * @returns {HTMLElement}
      */
     function getOrCreateContainer() {
         var container = document.getElementById('local-courseprogresspro');
@@ -71,7 +71,7 @@ define(['core/templates'], function(Templates) {
      * Moves the widget container into the main course content area.
      *
      * @param {HTMLElement} container
-     * @return {void}
+     * @returns {void}
      */
     function moveToCourseContent(container) {
         var selectors = [
@@ -94,10 +94,51 @@ define(['core/templates'], function(Templates) {
      * Normalizes a token for safe CSS class usage.
      *
      * @param {string} value
-     * @return {string}
+     * @returns {string}
      */
     function normalizeToken(value) {
         return String(value || '').toLowerCase().replace(/[^a-z0-9_-]/g, '');
+    }
+
+    /**
+     * Returns the localized labels for pending items.
+     *
+     * @param {Object} config Widget configuration.
+     * @returns {Object}
+     */
+    function getPendingLabels(config) {
+        return {
+            available: getConfigString(config, 'pendingstatusavailable'),
+            locked: getConfigString(config, 'pendingstatuslocked'),
+            open: getConfigString(config, 'pendingopenactivity')
+        };
+    }
+
+    /**
+     * Returns the normalized percentage value.
+     *
+     * @param {Object} config Widget configuration.
+     * @returns {number}
+     */
+    function getNormalizedValue(config) {
+        var rawvalue = config && Number.isFinite(Number(config.value)) ? Number(config.value) : 0;
+
+        return Math.max(0, Math.min(100, rawvalue));
+    }
+
+    /**
+     * Builds the pending timeline items collection.
+     *
+     * @param {Object} config Widget configuration.
+     * @param {Object} labels Localized labels.
+     * @returns {Array}
+     */
+    function buildPendingItems(config, labels) {
+        var items = config && Array.isArray(config.pendingitems) ? config.pendingitems : [];
+
+        return items.map(function(item) {
+            return buildPendingItemContext(item, labels);
+        });
     }
 
     /**
@@ -105,7 +146,7 @@ define(['core/templates'], function(Templates) {
      *
      * @param {Object} item
      * @param {Object} labels
-     * @return {Object}
+     * @returns {Object}
      */
     function buildPendingItemContext(item, labels) {
         var available = Number(item && item.available) === 1;
@@ -136,20 +177,12 @@ define(['core/templates'], function(Templates) {
      * Builds the full Mustache context for the widget.
      *
      * @param {Object} config
-     * @return {Object}
+     * @returns {Object}
      */
     function buildContext(config) {
-        var rawvalue = config && Number.isFinite(Number(config.value)) ? Number(config.value) : 0;
-        var labels = {
-            available: getConfigString(config, 'pendingstatusavailable'),
-            locked: getConfigString(config, 'pendingstatuslocked'),
-            open: getConfigString(config, 'pendingopenactivity')
-        };
-        var value = Math.max(0, Math.min(100, rawvalue));
-        var items = config && Array.isArray(config.pendingitems) ? config.pendingitems : [];
-        var pendingitems = items.map(function(item) {
-            return buildPendingItemContext(item, labels);
-        });
+        var labels = getPendingLabels(config);
+        var value = getNormalizedValue(config);
+        var pendingitems = buildPendingItems(config, labels);
 
         return {
             label: getConfigString(config, 'label'),
@@ -171,7 +204,7 @@ define(['core/templates'], function(Templates) {
      * Hides the pending-items modal.
      *
      * @param {HTMLElement} container
-     * @return {void}
+     * @returns {void}
      */
     function closeModal(container) {
         var modal = container.querySelector('.local-courseprogresspro__modal');
@@ -187,7 +220,7 @@ define(['core/templates'], function(Templates) {
      * Shows the pending-items modal.
      *
      * @param {HTMLElement} container
-     * @return {void}
+     * @returns {void}
      */
     function openModal(container) {
         var modal = container.querySelector('.local-courseprogresspro__modal');
@@ -203,7 +236,7 @@ define(['core/templates'], function(Templates) {
      * Binds modal open and close interactions once.
      *
      * @param {HTMLElement} container
-     * @return {void}
+     * @returns {void}
      */
     function bindModal(container) {
         if (container.dataset.bound === '1') {
@@ -238,7 +271,7 @@ define(['core/templates'], function(Templates) {
      * Initializes and renders the progress widget.
      *
      * @param {Object} config
-     * @return {Promise|undefined}
+     * @returns {Promise|undefined}
      */
     function init(config) {
         var container = getOrCreateContainer();
