@@ -21,6 +21,38 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 define(['core/templates'], function(Templates) {
+    /**
+     * Returns a string configuration value or an empty fallback.
+     *
+     * @param {Object} config Widget configuration.
+     * @param {string} key Configuration key.
+     * @return {string}
+     */
+    function getConfigString(config, key) {
+        return config && config[key] ? config[key] : '';
+    }
+
+    /**
+     * Returns whether a numeric config flag is enabled.
+     *
+     * @param {Object} config Widget configuration.
+     * @param {string} key Configuration key.
+     * @param {boolean} fallback Default value.
+     * @return {boolean}
+     */
+    function getConfigFlag(config, key, fallback) {
+        if (!config || typeof config[key] === 'undefined') {
+            return fallback;
+        }
+
+        return Number(config[key]) === 1;
+    }
+
+    /**
+     * Creates or reuses the root widget container.
+     *
+     * @return {HTMLElement}
+     */
     function getOrCreateContainer() {
         var container = document.getElementById('local-courseprogresspro');
         if (container) {
@@ -35,6 +67,12 @@ define(['core/templates'], function(Templates) {
         return container;
     }
 
+    /**
+     * Moves the widget container into the main course content area.
+     *
+     * @param {HTMLElement} container
+     * @return {void}
+     */
     function moveToCourseContent(container) {
         var selectors = [
             '#region-main',
@@ -52,17 +90,37 @@ define(['core/templates'], function(Templates) {
         }
     }
 
+    /**
+     * Normalizes a token for safe CSS class usage.
+     *
+     * @param {string} value
+     * @return {string}
+     */
     function normalizeToken(value) {
         return String(value || '').toLowerCase().replace(/[^a-z0-9_-]/g, '');
     }
 
+    /**
+     * Builds the template context for one pending timeline item.
+     *
+     * @param {Object} item
+     * @param {Object} labels
+     * @return {Object}
+     */
     function buildPendingItemContext(item, labels) {
         var available = Number(item && item.available) === 1;
         var url = item && item.url ? item.url : '';
+        var detail = '';
+
+        if (item && item.detail) {
+            detail = item.detail;
+        } else if (item && item.name) {
+            detail = item.name;
+        }
 
         return {
             name: item && item.name ? item.name : '',
-            detail: item && item.detail ? item.detail : (item && item.name ? item.name : ''),
+            detail: detail,
             type: item && item.type ? item.type : '',
             modname: normalizeToken(item && item.modname ? item.modname : ''),
             status: available ? labels.available : labels.locked,
@@ -74,37 +132,47 @@ define(['core/templates'], function(Templates) {
         };
     }
 
+    /**
+     * Builds the full Mustache context for the widget.
+     *
+     * @param {Object} config
+     * @return {Object}
+     */
     function buildContext(config) {
-        var value = config && Number.isFinite(Number(config.value)) ? Number(config.value) : 0;
+        var rawvalue = config && Number.isFinite(Number(config.value)) ? Number(config.value) : 0;
         var labels = {
-            available: config && config.pendingstatusavailable ? config.pendingstatusavailable : '',
-            locked: config && config.pendingstatuslocked ? config.pendingstatuslocked : '',
-            open: config && config.pendingopenactivity ? config.pendingopenactivity : ''
+            available: getConfigString(config, 'pendingstatusavailable'),
+            locked: getConfigString(config, 'pendingstatuslocked'),
+            open: getConfigString(config, 'pendingopenactivity')
         };
-
-        value = Math.max(0, Math.min(100, value));
-
-        var pendingitems = config && Array.isArray(config.pendingitems) ?
-            config.pendingitems.map(function(item) {
-                return buildPendingItemContext(item, labels);
-            }) : [];
+        var value = Math.max(0, Math.min(100, rawvalue));
+        var items = config && Array.isArray(config.pendingitems) ? config.pendingitems : [];
+        var pendingitems = items.map(function(item) {
+            return buildPendingItemContext(item, labels);
+        });
 
         return {
-            label: config && config.label ? config.label : '',
+            label: getConfigString(config, 'label'),
             value: value,
             percentage: value + '%',
-            maxlabel: config && config.maxlabel ? config.maxlabel : '100%',
-            showpercentage: !config || Number(config.showpercentage) === 1,
-            showpendingbutton: config && Number(config.showpendingbutton) === 1,
-            pendingbuttonlabel: config && config.pendingbuttonlabel ? config.pendingbuttonlabel : '',
-            pendingtitle: config && config.pendingtitle ? config.pendingtitle : '',
-            closemodal: config && config.closemodal ? config.closemodal : '',
-            pendingempty: config && config.pendingempty ? config.pendingempty : '',
+            maxlabel: getConfigString(config, 'maxlabel') || '100%',
+            showpercentage: getConfigFlag(config, 'showpercentage', true),
+            showpendingbutton: getConfigFlag(config, 'showpendingbutton', false),
+            pendingbuttonlabel: getConfigString(config, 'pendingbuttonlabel'),
+            pendingtitle: getConfigString(config, 'pendingtitle'),
+            closemodal: getConfigString(config, 'closemodal'),
+            pendingempty: getConfigString(config, 'pendingempty'),
             haspendingitems: pendingitems.length > 0,
             pendingitems: pendingitems
         };
     }
 
+    /**
+     * Hides the pending-items modal.
+     *
+     * @param {HTMLElement} container
+     * @return {void}
+     */
     function closeModal(container) {
         var modal = container.querySelector('.local-courseprogresspro__modal');
         if (!modal) {
@@ -115,6 +183,12 @@ define(['core/templates'], function(Templates) {
         document.body.classList.remove('local-courseprogresspro-modal-open');
     }
 
+    /**
+     * Shows the pending-items modal.
+     *
+     * @param {HTMLElement} container
+     * @return {void}
+     */
     function openModal(container) {
         var modal = container.querySelector('.local-courseprogresspro__modal');
         if (!modal) {
@@ -125,6 +199,12 @@ define(['core/templates'], function(Templates) {
         document.body.classList.add('local-courseprogresspro-modal-open');
     }
 
+    /**
+     * Binds modal open and close interactions once.
+     *
+     * @param {HTMLElement} container
+     * @return {void}
+     */
     function bindModal(container) {
         if (container.dataset.bound === '1') {
             return;
@@ -154,6 +234,12 @@ define(['core/templates'], function(Templates) {
         });
     }
 
+    /**
+     * Initializes and renders the progress widget.
+     *
+     * @param {Object} config
+     * @return {Promise|undefined}
+     */
     function init(config) {
         var container = getOrCreateContainer();
         if (container.dataset.initialized === '1') {
@@ -163,15 +249,17 @@ define(['core/templates'], function(Templates) {
         container.dataset.initialized = '1';
         moveToCourseContent(container);
 
-        Templates.renderForPromise('local_courseprogresspro/progress_widget', buildContext(config))
+        return Templates.renderForPromise('local_courseprogresspro/progress_widget', buildContext(config))
             .then(function(rendered) {
                 return Templates.replaceNodeContents(container, rendered.html, rendered.js);
             })
             .then(function() {
                 bindModal(container);
+                return container;
             })
-            .catch(function() {
+            .catch(function(error) {
                 container.dataset.initialized = '';
+                throw error;
             });
     }
 

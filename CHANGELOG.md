@@ -2,6 +2,13 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.10] - 2026-03-15
+
+### Fixed
+
+- Added JSDoc coverage to the AMD source functions, simplified `buildContext()`, removed nested ternary logic, and made the render promise chain return or throw explicitly.
+- Replaced the modal card `width` shorthand with `width` plus `max-width` for broader CSS compatibility.
+
 ## [0.7.9] - 2026-03-15
 
 ### Changed
