@@ -43,8 +43,8 @@
 
 .local-courseprogresspro__fill {
     display: block;
-    height: 100%;
     width: 0;
+    height: 100%;
     border-radius: inherit;
     background: linear-gradient(90deg, #0f6cbf 0%, #3bb273 100%);
 }
@@ -74,6 +74,7 @@
 }
 
 .local-courseprogresspro__button {
+    padding: 0.55rem 0.9rem;
     border: 1px solid #c8d8ee;
     border-radius: 0.85rem;
     background: #fff;
@@ -82,7 +83,6 @@
     font-size: 0.9rem;
     font-weight: 600;
     line-height: 1.35;
-    padding: 0.55rem 0.9rem;
     text-align: left;
     white-space: normal;
 }
@@ -115,14 +115,14 @@
 
 .local-courseprogresspro__modal-card {
     position: relative;
-    inline-size: 100%;
-    max-inline-size: 38rem;
+    width: 100%;
+    max-width: 38rem;
     max-height: 80vh;
     overflow: auto;
+    padding: 1rem;
     border-radius: 0.8rem;
     background: #fff;
     box-shadow: 0 20px 50px rgba(15, 23, 42, 0.22);
-    padding: 1rem;
 }
 
 .local-courseprogresspro__modal-header {
@@ -140,13 +140,13 @@
 }
 
 .local-courseprogresspro__close {
+    padding: 0;
     border: 0;
     background: none;
     color: #6b7280;
     cursor: pointer;
     font-size: 1.7rem;
     line-height: 1;
-    padding: 0;
 }
 
 .local-courseprogresspro__pending-list {
@@ -182,10 +182,10 @@
 }
 
 .local-courseprogresspro__pending-content {
+    padding: 0.7rem 0.8rem;
     border: 1px solid #d9e2f2;
     border-radius: 0.7rem;
     background: #fff;
-    padding: 0.7rem 0.8rem;
 }
 
 .local-courseprogresspro__pending-top {
@@ -205,26 +205,26 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    border-radius: 999px;
     padding: 0.1rem 0.55rem;
+    border-radius: 999px;
+    background: #dbeafe;
+    color: #0f172a;
     font-size: 0.75rem;
     font-weight: 700;
-    color: #0f172a;
-    background: #dbeafe;
 }
 
 .local-courseprogresspro__pending-type--quiz,
 .local-courseprogresspro__pending-type--assign,
 .local-courseprogresspro__pending-type--assignment {
-    color: #7c2d12;
     background: #ffedd5;
+    color: #7c2d12;
 }
 
 .local-courseprogresspro__pending-type--forum,
 .local-courseprogresspro__pending-type--feedback,
 .local-courseprogresspro__pending-type--data {
-    color: #4c1d95;
     background: #ede9fe;
+    color: #4c1d95;
 }
 
 .local-courseprogresspro__pending-type--resource,
@@ -232,8 +232,8 @@
 .local-courseprogresspro__pending-type--page,
 .local-courseprogresspro__pending-type--book,
 .local-courseprogresspro__pending-type--folder {
-    color: #0c4a6e;
     background: #e0f2fe;
+    color: #0c4a6e;
 }
 
 .local-courseprogresspro__pending-detail {
@@ -258,20 +258,20 @@
 }
 
 .local-courseprogresspro__pending-status {
-    border-radius: 999px;
     padding: 0.12rem 0.55rem;
+    border-radius: 999px;
     font-size: 0.72rem;
     font-weight: 700;
 }
 
 .local-courseprogresspro__pending-status.is-available {
-    color: #166534;
     background: #dcfce7;
+    color: #166534;
 }
 
 .local-courseprogresspro__pending-status.is-locked {
-    color: #9a3412;
     background: #ffedd5;
+    color: #9a3412;
 }
 
 .local-courseprogresspro__pending-link {

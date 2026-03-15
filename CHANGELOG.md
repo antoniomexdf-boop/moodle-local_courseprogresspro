@@ -2,6 +2,12 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.16] - 2026-03-15
+
+### Changed
+
+- Applied the latest stylesheet revision for the progress widget and pending timeline UI.
+
 ## [0.7.15] - 2026-03-15
 
 ### Changed
