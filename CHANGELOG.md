@@ -2,6 +2,12 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.12] - 2026-03-15
+
+### Fixed
+
+- Replaced inline file-level docblocks in `version.php` and `settings.php` with simple comments, removed flagged `defined('MOODLE_INTERNAL') || die();` lines from `lib.php` and the privacy provider, and corrected callback spacing in `lib.php`.
+
 ## [0.7.11] - 2026-03-15
 
 ### Fixed
