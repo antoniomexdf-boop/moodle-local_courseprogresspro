@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Local Course Progress Pro helper functions.
  *
@@ -111,7 +109,7 @@ function local_courseprogresspro_get_snapshot(stdClass $course, int $userid): ar
         $percentage = (int)round(($completedunits / $totalunits) * 100);
     }
 
-    usort($pendingitems, static function(array $a, array $b): int {
+    usort($pendingitems, static function (array $a, array $b): int {
         return ($b['available'] ?? 0) <=> ($a['available'] ?? 0);
     });
 

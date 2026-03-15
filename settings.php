@@ -16,14 +16,6 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-/**
- * Plugin settings for Local Course Progress Pro.
- *
- * @package    local_courseprogresspro
- * @copyright  2026 Jesus Antonio Jimenez Avina <antoniomexdf@gmail.com>
- * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
-
 if ($hassiteconfig) {
     $settings = new admin_settingpage('local_courseprogresspro', get_string('pluginname', 'local_courseprogresspro'));
     $ADMIN->add('localplugins', $settings);
