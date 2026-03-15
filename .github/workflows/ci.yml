@@ -29,18 +29,17 @@ jobs:
       postgres:
         image: postgres:14
         env:
-          POSTGRES_USER: moodle
-          POSTGRES_PASSWORD: moodle
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U moodle"
+          --health-cmd="pg_isready -U postgres -d postgres"
           --health-interval=10s
           --health-timeout=5s
           --health-retries=10
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -72,7 +71,7 @@ jobs:
       - name: Wait for PostgreSQL
         run: |
           for i in {1..20}; do
-            pg_isready -h 127.0.0.1 -U moodle && break
+            pg_isready -h 127.0.0.1 -U postgres -d postgres && break
             sleep 2
           done
 
@@ -82,8 +81,8 @@ jobs:
             --plugin . \
             --db-type=pgsql \
             --db-host=127.0.0.1 \
-            --db-user=moodle \
-            --db-pass=moodle \
+            --db-user=postgres \
+            --db-pass=postgres \
             --db-name=moodle
         env:
           MOODLE_BRANCH: ${{ matrix.moodle-branch }}
