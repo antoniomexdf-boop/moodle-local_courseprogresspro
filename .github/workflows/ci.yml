@@ -2,20 +2,28 @@ name: Moodle Plugin CI
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-
   ci:
+    name: ci (${{ matrix.moodle-branch }}, PHP ${{ matrix.php }}, ${{ matrix.database }})
     runs-on: ubuntu-latest
 
     strategy:
+      fail-fast: false
       matrix:
-        moodle-branch: [MOODLE_405_STABLE]
-        php: ['8.2']
-        database: [pgsql]
+        moodle-branch:
+          - MOODLE_404_STABLE
+          - MOODLE_405_STABLE
+        php:
+          - '8.1'
+          - '8.2'
+        database:
+          - pgsql
 
     services:
       postgres:
@@ -27,44 +35,70 @@ jobs:
         ports:
           - 5432:5432
         options: >-
-          --health-cmd="pg_isready -U moodle"
+          --health-cmd="pg_isready -U moodle -d moodle"
           --health-interval=10s
           --health-timeout=5s
-          --health-retries=5
+          --health-retries=10
 
     steps:
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup PHP
+      - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: pgsql, intl, mbstring, xml, curl, zip
-          tools: composer
+          extensions: >
+            curl, dom, gd, intl, json, mbstring, openssl, pdo, pgsql,
+            simplexml, soap, xml, xmlreader, zip
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer downloads
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache/files
+          key: composer-${{ runner.os }}-${{ matrix.php }}-${{ matrix.moodle-branch }}
+          restore-keys: |
+            composer-${{ runner.os }}-${{ matrix.php }}-
+            composer-${{ runner.os }}-
 
       - name: Install moodle-plugin-ci
         run: |
-          composer global require moodlehq/moodle-plugin-ci
-          echo "$HOME/.composer/vendor/bin" >> $GITHUB_PATH
+          composer create-project -n --no-dev --prefer-dist moodlehq/moodle-plugin-ci ci 4.5.10
+          echo "$(cd ci/bin && pwd)" >> "$GITHUB_PATH"
+          echo "$(cd ci/vendor/bin && pwd)" >> "$GITHUB_PATH"
 
       - name: Install Moodle
         run: |
           moodle-plugin-ci install \
-          --db-type=pgsql \
-          --db-host=127.0.0.1 \
-          --db-user=moodle \
-          --db-pass=moodle \
-          --db-name=moodle \
-          --moodle=${{ matrix.moodle-branch }}
+            --plugin . \
+            --db-type="${{ matrix.database }}" \
+            --db-host="127.0.0.1" \
+            --db-user="moodle" \
+            --db-pass="moodle" \
+            --db-name="moodle"
+        env:
+          MOODLE_BRANCH: ${{ matrix.moodle-branch }}
 
       - name: PHP lint
         run: moodle-plugin-ci phplint
 
       - name: Moodle code checker
-        run: moodle-plugin-ci phpcs
+        run: moodle-plugin-ci phpcs --max-warnings=0
+
+      - name: Moodle PHPDoc checker
+        run: moodle-plugin-ci phpdoc --max-warnings=0
+
+      - name: Validate plugin
+        run: moodle-plugin-ci validate
+
+      - name: Check upgrade savepoints
+        run: moodle-plugin-ci savepoints
+
+      - name: Mustache lint
+        run: moodle-plugin-ci mustache
 
       - name: PHPUnit tests
-        run: moodle-plugin-ci phpunit
+        run: moodle-plugin-ci phpunit --fail-on-warning
 
