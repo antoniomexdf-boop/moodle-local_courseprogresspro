@@ -1,12 +1,32 @@
 <?php
 // This file is part of Moodle - http://moodle.org/
-// Author: Jesus Jimenez <antoniojamx@gmail.com>
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 defined('MOODLE_INTERNAL') || die();
 
+/**
+ * Version details for Local Course Progress Pro.
+ *
+ * @package    local_courseprogresspro
+ * @copyright  2026 Jesus Antonio Jimenez Avina <antoniomexdf@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 // Plugin type: local.
 $plugin->component = 'local_courseprogresspro';
-$plugin->version = 2026030801;
+$plugin->version = 2026031405;
 $plugin->requires = 2022112800; // Moodle 4.1+.
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '0.6.5';
+$plugin->release = '0.7.3';

@@ -17,14 +17,21 @@
 ## Funciones
 
 - Barra de progreso y porcentaje
-- Conteo de acciones completadas
+- Fuente principal del progreso alineada con Moodle por defecto
+- Resumen de acciones pendientes
 - Botón de acciones pendientes
 - Timeline/modal de pendientes con enlaces y estado de disponibilidad
+- Timeline de pendientes con ligas directas visibles y fallback a seccion
+- Los cuestionarios aparecen como una sola accion pendiente con detalle de preguntas por responder
+- Modo de conteo de recursos con finalización
 - Habilitar/deshabilitar plugin globalmente
 
 ## Experiencia del Estudiante
 
-El estudiante ve una interfaz de progreso genérica; las etiquetas de edición no se muestran en la UI del curso.
+El estudiante ve una interfaz de progreso generica; las etiquetas de edicion no se muestran en la UI del curso.
+La barra principal sigue por defecto el progreso oficial del curso en Moodle.
+Los pendientes se muestran como lo que falta por completar y no como un segundo porcentaje en competencia.
+El resumen de pendientes se integra dentro del boton para una vista mas limpia.
 
 ## Requisitos
 
@@ -44,10 +51,11 @@ Ruta:
 Ajustes disponibles:
 
 - Habilitar plugin
+- Fuente principal del progreso
 - Contar recursos
+- Requerir finalización para recursos
 - Modo de cálculo de cuestionarios
 - Mostrar porcentaje numérico
-- Mostrar conteo de acciones completadas
 - Mostrar botón de acciones pendientes
 - Texto del encabezado
 
@@ -63,5 +71,5 @@ No se almacenan datos personales.
 
 ## Versión
 
-- Release: `0.6.5`
-- Version: `2026030801`
+- Release: `0.7.3`
+- Version: `2026031405`

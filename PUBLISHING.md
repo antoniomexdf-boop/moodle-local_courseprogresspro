@@ -8,8 +8,8 @@
 
 ## Package info
 
-- Release: `0.6.5`
-- Version: `2026030801`
+- Release: `0.7.3`
+- Version: `2026031402`
 - Requires: Moodle `4.1+`
 
 ## Pre-upload validation

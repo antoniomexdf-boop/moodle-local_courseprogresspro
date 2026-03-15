@@ -1,13 +1,26 @@
-define([], function() {
-    function escapeHtml(value) {
-        return String(value || '')
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Course progress widget renderer.
+ *
+ * @module     local_courseprogresspro/progress
+ * @copyright  2026 Jesus Antonio Jimenez Avina <antoniomexdf@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+define(['core/templates'], function(Templates) {
     function getOrCreateContainer() {
         var container = document.getElementById('local-courseprogresspro');
         if (container) {
@@ -43,50 +56,53 @@ define([], function() {
         return String(value || '').toLowerCase().replace(/[^a-z0-9_-]/g, '');
     }
 
-    function renderPendingItems(items, emptyText, labels) {
-        if (!items || !items.length) {
-            return '<p class="local-courseprogresspro__empty">' + escapeHtml(emptyText) + '</p>';
-        }
+    function buildPendingItemContext(item, labels) {
+        var available = Number(item && item.available) === 1;
+        var url = item && item.url ? item.url : '';
 
-        var html = items.map(function(item) {
-            if (typeof item === 'string') {
-                return '<li class="local-courseprogresspro__pending-item">' + escapeHtml(item) + '</li>';
-            }
+        return {
+            name: item && item.name ? item.name : '',
+            detail: item && item.detail ? item.detail : (item && item.name ? item.name : ''),
+            type: item && item.type ? item.type : '',
+            modname: normalizeToken(item && item.modname ? item.modname : ''),
+            status: available ? labels.available : labels.locked,
+            statusclass: available ? 'is-available' : 'is-locked',
+            url: url,
+            hasurl: !!url,
+            linklabel: item && item.linklabel ? item.linklabel : labels.open,
+            availabilityinfo: item && item.availabilityinfo ? item.availabilityinfo : ''
+        };
+    }
 
-            var name = item && item.name ? item.name : '';
-            var detail = item && item.detail ? item.detail : name;
-            var type = item && item.type ? item.type : '';
-            var modname = normalizeToken(item && item.modname ? item.modname : '');
-            var available = Number(item && item.available) === 1;
-            var url = item && item.url ? item.url : '';
-            var status = available ? labels.available : labels.locked;
-            var statusClass = available ? 'is-available' : 'is-locked';
-            var actionHtml = '';
+    function buildContext(config) {
+        var value = config && Number.isFinite(Number(config.value)) ? Number(config.value) : 0;
+        var labels = {
+            available: config && config.pendingstatusavailable ? config.pendingstatusavailable : 'Disponible ahora',
+            locked: config && config.pendingstatuslocked ? config.pendingstatuslocked : 'Aun no disponible',
+            open: config && config.pendingopenactivity ? config.pendingopenactivity : 'Abrir actividad'
+        };
 
-            if (available && url) {
-                actionHtml = '<a class="local-courseprogresspro__pending-link" href="' + escapeHtml(url) + '">' +
-                    escapeHtml(labels.open) + '</a>';
-            }
+        value = Math.max(0, Math.min(100, value));
 
-            return '' +
-                '<li class="local-courseprogresspro__pending-item local-courseprogresspro__pending-item--timeline ' + statusClass + '">' +
-                    '<span class="local-courseprogresspro__dot" aria-hidden="true"></span>' +
-                    '<div class="local-courseprogresspro__pending-content">' +
-                        '<div class="local-courseprogresspro__pending-top">' +
-                            '<span class="local-courseprogresspro__pending-name">' + escapeHtml(name) + '</span>' +
-                            '<span class="local-courseprogresspro__pending-type local-courseprogresspro__pending-type--' + modname + '">' +
-                                escapeHtml(type) + '</span>' +
-                        '</div>' +
-                        '<div class="local-courseprogresspro__pending-detail">' + escapeHtml(detail) + '</div>' +
-                        '<div class="local-courseprogresspro__pending-meta">' +
-                            '<span class="local-courseprogresspro__pending-status ' + statusClass + '">' + escapeHtml(status) + '</span>' +
-                            actionHtml +
-                        '</div>' +
-                    '</div>' +
-                '</li>';
-        });
+        var pendingitems = config && Array.isArray(config.pendingitems) ?
+            config.pendingitems.map(function(item) {
+                return buildPendingItemContext(item, labels);
+            }) : [];
 
-        return '<ul class="local-courseprogresspro__pending-list">' + html.join('') + '</ul>';
+        return {
+            label: config && config.label ? config.label : 'Barra de progreso',
+            value: value,
+            percentage: value + '%',
+            maxlabel: config && config.maxlabel ? config.maxlabel : '100%',
+            showpercentage: !config || Number(config.showpercentage) === 1,
+            showpendingbutton: config && Number(config.showpendingbutton) === 1,
+            pendingbuttonlabel: config && config.pendingbuttonlabel ? config.pendingbuttonlabel : 'Ver acciones pendientes',
+            pendingtitle: config && config.pendingtitle ? config.pendingtitle : 'Acciones pendientes',
+            closemodal: config && config.closemodal ? config.closemodal : 'Cerrar ventana',
+            pendingempty: config && config.pendingempty ? config.pendingempty : 'No hay actividades pendientes.',
+            haspendingitems: pendingitems.length > 0,
+            pendingitems: pendingitems
+        };
     }
 
     function closeModal(container) {
@@ -147,53 +163,16 @@ define([], function() {
         container.dataset.initialized = '1';
         moveToCourseContent(container);
 
-        var label = config && config.label ? config.label : 'Barra de progreso';
-        var completedcount = config && config.completedcount ? config.completedcount : '';
-        var value = config && Number.isFinite(Number(config.value)) ? Number(config.value) : 0;
-        var maxlabel = config && config.maxlabel ? config.maxlabel : '100%';
-        var showpercentage = !config || Number(config.showpercentage) === 1;
-        var showcompletedcount = config && Number(config.showcompletedcount) === 1;
-        var showpendingbutton = config && Number(config.showpendingbutton) === 1;
-        var pendingbuttonlabel = config && config.pendingbuttonlabel ? config.pendingbuttonlabel : 'Ver acciones pendientes';
-        var pendingtitle = config && config.pendingtitle ? config.pendingtitle : 'Acciones pendientes';
-        var pendingempty = config && config.pendingempty ? config.pendingempty : 'No hay actividades pendientes.';
-        var closemodal = config && config.closemodal ? config.closemodal : 'Cerrar ventana';
-        var pendingstatusavailable = config && config.pendingstatusavailable ? config.pendingstatusavailable : 'Disponible ahora';
-        var pendingstatuslocked = config && config.pendingstatuslocked ? config.pendingstatuslocked : 'Aun no disponible';
-        var pendingopenactivity = config && config.pendingopenactivity ? config.pendingopenactivity : 'Abrir actividad';
-        var pendingitems = config && Array.isArray(config.pendingitems) ? config.pendingitems : [];
-        value = Math.max(0, Math.min(100, value));
-
-        container.innerHTML =
-            '<div class="local-courseprogresspro__title">' + label + '</div>' +
-            '<div class="local-courseprogresspro__track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + value + '">' +
-                '<span class="local-courseprogresspro__fill" style="width: ' + value + '%;"></span>' +
-            '</div>' +
-            '<div class="local-courseprogresspro__meta">' +
-                '<div class="local-courseprogresspro__value">' + (showpercentage ? value + '%' : '') + '</div>' +
-                '<div class="local-courseprogresspro__max">' + maxlabel + '</div>' +
-            '</div>' +
-            '<div class="local-courseprogresspro__count">' + (showcompletedcount ? completedcount : '') + '</div>' +
-            '<div class="local-courseprogresspro__actions">' +
-                (showpendingbutton ? '<button type="button" class="local-courseprogresspro__button" data-action="open-pending">' +
-                    escapeHtml(pendingbuttonlabel) + '</button>' : '') +
-            '</div>' +
-            '<div class="local-courseprogresspro__modal" hidden="hidden" role="dialog" aria-modal="true">' +
-                '<button type="button" class="local-courseprogresspro__backdrop" data-action="close-pending" aria-label="' + escapeHtml(closemodal) + '"></button>' +
-                '<div class="local-courseprogresspro__modal-card">' +
-                    '<div class="local-courseprogresspro__modal-header">' +
-                        '<div class="local-courseprogresspro__modal-title">' + escapeHtml(pendingtitle) + '</div>' +
-                        '<button type="button" class="local-courseprogresspro__close" data-action="close-pending" aria-label="' + escapeHtml(closemodal) + '">&times;</button>' +
-                    '</div>' +
-                    renderPendingItems(pendingitems, pendingempty, {
-                        available: pendingstatusavailable,
-                        locked: pendingstatuslocked,
-                        open: pendingopenactivity
-                    }) +
-                '</div>' +
-            '</div>';
-
-        bindModal(container);
+        Templates.renderForPromise('local_courseprogresspro/progress_widget', buildContext(config))
+            .then(function(rendered) {
+                return Templates.replaceNodeContents(container, rendered.html, rendered.js);
+            })
+            .then(function() {
+                bindModal(container);
+            })
+            .catch(function() {
+                container.dataset.initialized = '';
+            });
     }
 
     return {

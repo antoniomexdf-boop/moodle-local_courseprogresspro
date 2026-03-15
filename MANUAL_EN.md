@@ -17,14 +17,21 @@
 ## Features
 
 - Progress bar and percentage
-- Completed actions count
+- Main progress source aligned to Moodle course completion by default
+- Pending actions summary
 - Pending actions button
 - Pending timeline/modal with links and availability state
+- Pending timeline keeps direct access links visible for activities and section fallbacks
+- Quiz items appear as one pending action with remaining-question detail
+- Completion-aware resource counting mode
 - Global plugin enable/disable
 
 ## Student Experience
 
 Students see a generic progress UI; edition labels are not shown in the course interface.
+The main progress indicator follows official Moodle course progress by default.
+Pending items are presented as what remains to be completed, not as a second competing percentage.
+The pending summary is integrated into the action button for a cleaner layout.
 
 ## Requirements
 
@@ -44,10 +51,11 @@ Path:
 Available settings:
 
 - Enable plugin
+- Main progress source
 - Count resources
+- Require completion tracking for resources
 - Quiz calculation mode
 - Show numeric percentage
-- Show completed actions count
 - Show pending actions button
 - Header text
 
@@ -63,5 +71,5 @@ No personal data is stored.
 
 ## Release
 
-- Release: `0.6.5`
-- Version: `2026030801`
+- Release: `0.7.3`
+- Version: `2026031405`

@@ -1,7 +1,28 @@
 <?php
 // This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 defined('MOODLE_INTERNAL') || die();
+
+/**
+ * Local Course Progress Pro helper functions.
+ *
+ * @package    local_courseprogresspro
+ * @copyright  2026 Jesus Antonio Jimenez Avina <antoniomexdf@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
 
 /**
  * Gets a plugin setting with fallback.
@@ -54,9 +75,10 @@ function local_courseprogresspro_get_snapshot(stdClass $course, int $userid): ar
 
     $modinfo = get_fast_modinfo($course);
     $completioninfo = new completion_info($course);
-    $viewedcmids = local_courseprogresspro_get_viewed_cmids((int)$course->id, $userid);
     $settings = [
+        'mainprogresssource' => (string)local_courseprogresspro_get_setting('mainprogresssource', 'moodle'),
         'countresources' => (int)local_courseprogresspro_get_setting('countresources', 1),
+        'resourcesrequirecompletion' => (int)local_courseprogresspro_get_setting('resourcesrequirecompletion', 1),
         'quizmode' => (string)local_courseprogresspro_get_setting('quizmode', 'questions'),
     ];
 
@@ -69,13 +91,19 @@ function local_courseprogresspro_get_snapshot(stdClass $course, int $userid): ar
             continue;
         }
 
-        $progress = local_courseprogresspro_get_cm_progress($cm, $userid, $completioninfo, $viewedcmids, $settings);
+        $progress = local_courseprogresspro_get_cm_progress($cm, $userid, $completioninfo, $settings);
         $completedunits += $progress['completedunits'];
         $totalunits += $progress['totalunits'];
 
         if (!empty($progress['pendingdetail'])) {
             $pendingitems[] = $progress['pendingdetail'];
         }
+    }
+
+    if (($settings['mainprogresssource'] ?? 'moodle') === 'moodle') {
+        $moodlesnapshot = local_courseprogresspro_get_moodle_progress_snapshot($modinfo, $completioninfo, $userid);
+        $completedunits = $moodlesnapshot['completedunits'];
+        $totalunits = $moodlesnapshot['totalunits'];
     }
 
     $percentage = 0;
@@ -91,7 +119,46 @@ function local_courseprogresspro_get_snapshot(stdClass $course, int $userid): ar
         'completedunits' => $completedunits,
         'totalunits' => $totalunits,
         'percentage' => max(0, min(100, $percentage)),
+        'pendingcount' => count($pendingitems),
         'pendingitems' => $pendingitems,
+    ];
+}
+
+/**
+ * Builds the main progress snapshot using Moodle completion data only.
+ *
+ * @param course_modinfo $modinfo
+ * @param completion_info $completioninfo
+ * @param int $userid
+ * @return array
+ */
+function local_courseprogresspro_get_moodle_progress_snapshot(
+    course_modinfo $modinfo,
+    completion_info $completioninfo,
+    int $userid
+): array {
+    $completedunits = 0;
+    $totalunits = 0;
+
+    foreach ($modinfo->get_cms() as $cm) {
+        if (!$cm->visible) {
+            continue;
+        }
+
+        if ($completioninfo->is_enabled($cm) == COMPLETION_TRACKING_NONE) {
+            continue;
+        }
+
+        $totalunits++;
+        $data = $completioninfo->get_data($cm, true, $userid);
+        if (!empty($data->completionstate) && (int)$data->completionstate !== COMPLETION_INCOMPLETE) {
+            $completedunits++;
+        }
+    }
+
+    return [
+        'completedunits' => $completedunits,
+        'totalunits' => $totalunits,
     ];
 }
 
@@ -118,6 +185,16 @@ function local_courseprogresspro_should_count_cm(cm_info $cm, array $settings): 
 }
 
 /**
+ * Returns whether the module is treated as a resource item.
+ *
+ * @param cm_info $cm
+ * @return bool
+ */
+function local_courseprogresspro_is_resource_cm(cm_info $cm): bool {
+    return in_array($cm->modname, ['resource', 'url', 'page', 'book', 'folder'], true);
+}
+
+/**
  * Returns whether the module is not yet visible to the user due to availability.
  *
  * @param cm_info $cm
@@ -137,8 +214,17 @@ function local_courseprogresspro_is_pending_visibility(cm_info $cm): bool {
 function local_courseprogresspro_build_pending_item(cm_info $cm, string $detail): array {
     $available = !local_courseprogresspro_is_pending_visibility($cm);
     $url = '';
-    if ($available && !empty($cm->url)) {
+    $linklabel = get_string('pendingopenactivity', 'local_courseprogresspro');
+    if (!empty($cm->url)) {
         $url = $cm->url->out(false);
+    } else if (!empty($cm->course) && isset($cm->sectionnum) && $cm->sectionnum !== null) {
+        $url = (new moodle_url('/course/view.php', ['id' => (int)$cm->course], 'section-' . (int)$cm->sectionnum))->out(false);
+        $linklabel = get_string('pendinggotosection', 'local_courseprogresspro');
+    }
+
+    $availabilityinfo = '';
+    if (!$available && !empty($cm->availableinfo)) {
+        $availabilityinfo = trim(html_to_text($cm->availableinfo, 0));
     }
 
     return [
@@ -147,6 +233,8 @@ function local_courseprogresspro_build_pending_item(cm_info $cm, string $detail)
         'modname' => clean_param($cm->modname, PARAM_ALPHANUMEXT),
         'available' => $available ? 1 : 0,
         'url' => $url,
+        'linklabel' => $linklabel,
+        'availabilityinfo' => $availabilityinfo,
         'detail' => $detail,
     ];
 }
@@ -157,22 +245,33 @@ function local_courseprogresspro_build_pending_item(cm_info $cm, string $detail)
  * @param cm_info $cm
  * @param int $userid
  * @param completion_info $completioninfo
- * @param array $viewedcmids
+ * @param array $settings
  * @return array
  */
 function local_courseprogresspro_get_cm_progress(
     cm_info $cm,
     int $userid,
     completion_info $completioninfo,
-    array $viewedcmids,
     array $settings
 ): array {
+    if (
+        local_courseprogresspro_is_resource_cm($cm) &&
+        !empty($settings['resourcesrequirecompletion']) &&
+        $completioninfo->is_enabled($cm) == COMPLETION_TRACKING_NONE
+    ) {
+        return [
+            'completedunits' => 0,
+            'totalunits' => 0,
+            'pendingdetail' => [],
+        ];
+    }
+
     if ($cm->modname === 'quiz' && ($settings['quizmode'] ?? 'questions') === 'questions') {
         return local_courseprogresspro_get_quiz_progress($cm, $userid);
     }
 
     $completed = !local_courseprogresspro_is_pending_visibility($cm) &&
-        local_courseprogresspro_is_cm_completed($cm, $userid, $completioninfo, $viewedcmids);
+        local_courseprogresspro_is_cm_completed($cm, $userid, $completioninfo);
     $name = format_string($cm->name ?: $cm->modplural);
     $detail = get_string('pendingactivityitem', 'local_courseprogresspro', (object)['name' => $name]);
 
@@ -253,14 +352,12 @@ function local_courseprogresspro_get_quiz_progress(cm_info $cm, int $userid): ar
  * @param cm_info $cm
  * @param int $userid
  * @param completion_info $completioninfo
- * @param array $viewedcmids
  * @return bool
  */
 function local_courseprogresspro_is_cm_completed(
     cm_info $cm,
     int $userid,
-    completion_info $completioninfo,
-    array $viewedcmids
+    completion_info $completioninfo
 ): bool {
     global $DB;
 
@@ -322,42 +419,10 @@ function local_courseprogresspro_is_cm_completed(
         case 'page':
         case 'book':
         case 'folder':
-            return in_array((int)$cm->id, $viewedcmids, true);
+            return false;
     }
 
-    return in_array((int)$cm->id, $viewedcmids, true);
-}
-
-/**
- * Gets course module ids viewed by the user from standard logs.
- *
- * @param int $courseid
- * @param int $userid
- * @return array
- */
-function local_courseprogresspro_get_viewed_cmids(int $courseid, int $userid): array {
-    global $DB;
-
-    if (!$DB->get_manager()->table_exists('logstore_standard_log')) {
-        return [];
-    }
-
-    $records = $DB->get_records_sql(
-        "SELECT DISTINCT contextinstanceid
-           FROM {logstore_standard_log}
-          WHERE courseid = :courseid
-            AND userid = :userid
-            AND contextlevel = :contextlevel
-            AND action = :action",
-        [
-            'courseid' => $courseid,
-            'userid' => $userid,
-            'contextlevel' => CONTEXT_MODULE,
-            'action' => 'viewed',
-        ]
-    );
-
-    return array_map('intval', array_keys($records));
+    return false;
 }
 
 /**
@@ -377,23 +442,23 @@ function local_courseprogresspro_bootstrap(stdClass $course): void {
 
     $snapshot = local_courseprogresspro_get_snapshot($course, (int)$USER->id);
     $showpercentage = (int)local_courseprogresspro_get_setting('showpercentage', 1);
-    $showcompletedcount = (int)local_courseprogresspro_get_setting('showcompletedcount', 1);
     $showpendingbutton = (int)local_courseprogresspro_get_setting('showpendingbutton', 1);
     $headertext = (string)local_courseprogresspro_get_setting('headertext', get_string('progresslabel', 'local_courseprogresspro'));
+    $pendingsummary = $snapshot['pendingcount'] > 0
+        ? get_string('pendingcountsummary', 'local_courseprogresspro', $snapshot['pendingcount'])
+        : get_string('allactivitiesdone', 'local_courseprogresspro');
+    $pendingbuttonlabel = $snapshot['pendingcount'] > 0
+        ? $pendingsummary
+        : get_string('pendingbuttonlabel', 'local_courseprogresspro');
 
-    $PAGE->requires->css('/local/courseprogresspro/styles.css');
     $PAGE->requires->js_call_amd('local_courseprogresspro/progress', 'init', [[
         'label' => $headertext,
         'value' => $snapshot['percentage'],
-        'completedcount' => get_string('completedcount', 'local_courseprogresspro', (object)[
-            'completed' => $snapshot['completedunits'],
-            'total' => $snapshot['totalunits'],
-        ]),
+        'pendingsummary' => $pendingsummary,
         'maxlabel' => '100%',
         'showpercentage' => $showpercentage,
-        'showcompletedcount' => $showcompletedcount,
         'showpendingbutton' => $showpendingbutton,
-        'pendingbuttonlabel' => get_string('pendingbuttonlabel', 'local_courseprogresspro'),
+        'pendingbuttonlabel' => $pendingbuttonlabel,
         'pendingtitle' => get_string('pendingmodaltitle', 'local_courseprogresspro'),
         'pendingempty' => get_string('nopendingitems', 'local_courseprogresspro'),
         'closemodal' => get_string('closemodal', 'local_courseprogresspro'),

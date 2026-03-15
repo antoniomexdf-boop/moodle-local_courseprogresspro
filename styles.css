@@ -1,3 +1,23 @@
+/* This file is part of Moodle - http://moodle.org/
+ *
+ * Moodle is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Moodle is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * @package    local_courseprogresspro
+ * @copyright  2026 Jesus Antonio Jimenez Avina <antoniomexdf@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 .local-courseprogresspro {
     margin: 1rem 0;
     padding: 0.85rem 1rem;
@@ -49,26 +69,22 @@
     font-weight: 600;
 }
 
-.local-courseprogresspro__count {
-    margin-top: 0.35rem;
-    color: #374151;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
 .local-courseprogresspro__actions {
-    margin-top: 0.55rem;
+    margin-top: 0.45rem;
 }
 
 .local-courseprogresspro__button {
     border: 1px solid #c8d8ee;
-    border-radius: 999px;
+    border-radius: 0.85rem;
     background: #fff;
     color: #0f6cbf;
     cursor: pointer;
     font-size: 0.9rem;
     font-weight: 600;
-    padding: 0.45rem 0.8rem;
+    line-height: 1.35;
+    padding: 0.55rem 0.9rem;
+    text-align: left;
+    white-space: normal;
 }
 
 .local-courseprogresspro__button:hover,
@@ -223,6 +239,13 @@
     margin-top: 0.35rem;
     color: #334155;
     font-size: 0.88rem;
+}
+
+.local-courseprogresspro__pending-availability {
+    margin-top: 0.35rem;
+    color: #9a3412;
+    font-size: 0.82rem;
+    font-weight: 600;
 }
 
 .local-courseprogresspro__pending-meta {

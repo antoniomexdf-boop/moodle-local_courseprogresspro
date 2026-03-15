@@ -20,16 +20,20 @@ Pro edition of Course Progress for Moodle.
 
 ## Features
 
-- Progress bar with percentage.
-- Completed actions count.
+- Main progress bar aligned to Moodle course completion by default.
+- Pending actions summary.
 - Pending actions button.
 - Pending timeline/modal with direct activity links.
 - Availability and activity-type highlighting in pending list.
+- Quiz pending detail shown as one pending action with remaining-question context.
+- Completion-aware resource counting mode.
+- Optional legacy custom progress mode for compatibility.
 - Global enable/disable switch.
 
 ## Student Experience
 
-- The interface is intentionally transparent for students.
+- The main bar reflects official Moodle course progress by default.
+- The pending button now carries the "what remains" summary to keep the widget compact.
 - Students only see a generic progress UI (no Lite/Pro label).
 
 ## Installation
