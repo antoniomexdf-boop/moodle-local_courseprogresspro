@@ -52,6 +52,7 @@ jobs:
             pdo, pgsql, simplexml, soap, xml, xmlreader, zip
           coverage: none
           tools: composer:v2
+          ini-values: max_input_vars=5000
 
       - name: Cache Composer downloads
         uses: actions/cache@v4
@@ -83,7 +84,8 @@ jobs:
             --db-host=127.0.0.1 \
             --db-user=postgres \
             --db-pass=postgres \
-            --db-name=moodle
+            --db-name=moodle \
+            --no-init
         env:
           MOODLE_BRANCH: ${{ matrix.moodle-branch }}
 
