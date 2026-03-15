@@ -2,6 +2,12 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.15] - 2026-03-15
+
+### Changed
+
+- Reviewed and incorporated the latest manual adjustments in `progress.js`, `styles.css`, `version.php`, `settings.php`, and `lib.php`, then refreshed the release package metadata.
+
 ## [0.7.14] - 2026-03-15
 
 ### Changed
