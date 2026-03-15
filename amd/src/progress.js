@@ -20,14 +20,14 @@
  * @copyright  2026 Jesus Antonio Jimenez Avina <antoniomexdf@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['core/templates'], function (Templates) {
+define(['core/templates'], function(Templates) {
     /**
      * Get a string configuration value.
      *
      * @param {Object} config Widget configuration.
      * @param {string} key Configuration key.
      * @returns {string}
-     **/
+     */
     function getConfigString(config, key) {
         return config && config[key] ? config[key] : '';
     }
@@ -39,7 +39,7 @@ define(['core/templates'], function (Templates) {
      * @param {string} key Configuration key.
      * @param {boolean} fallback Default value.
      * @returns {boolean}
-     **/
+     */
     function getConfigFlag(config, key, fallback) {
         if (!config || typeof config[key] === 'undefined') {
             return fallback;
@@ -52,9 +52,10 @@ define(['core/templates'], function (Templates) {
      * Get or create the root widget container.
      *
      * @returns {HTMLElement}
-     **/
+     */
     function getOrCreateContainer() {
         var container = document.getElementById('local-courseprogresspro');
+
         if (container) {
             return container;
         }
@@ -64,15 +65,16 @@ define(['core/templates'], function (Templates) {
         container.className = 'local-courseprogresspro';
         container.setAttribute('aria-live', 'polite');
         document.body.insertBefore(container, document.body.firstChild);
+
         return container;
     }
 
     /**
      * Move the widget container into the main course content area.
      *
-     * @param {HTMLElement} container
+     * @param {HTMLElement} container Widget container.
      * @returns {void}
-     **/
+     */
     function moveToCourseContent(container) {
         var selectors = [
             '#region-main',
@@ -80,9 +82,12 @@ define(['core/templates'], function (Templates) {
             '#page-content',
             '.course-content'
         ];
+        var i;
+        var target = null;
 
-        for (var i = 0; i < selectors.length; i++) {
-            var target = document.querySelector(selectors[i]);
+        for (i = 0; i < selectors.length; i++) {
+            target = document.querySelector(selectors[i]);
+
             if (target) {
                 target.insertBefore(container, target.firstChild);
                 return;
@@ -93,9 +98,9 @@ define(['core/templates'], function (Templates) {
     /**
      * Normalize a token for safe CSS class usage.
      *
-     * @param {string} value
+     * @param {string} value Raw token value.
      * @returns {string}
-     **/
+     */
     function normalizeToken(value) {
         return String(value || '').toLowerCase().replace(/[^a-z0-9_-]/g, '');
     }
@@ -105,7 +110,7 @@ define(['core/templates'], function (Templates) {
      *
      * @param {Object} config Widget configuration.
      * @returns {Object}
-     **/
+     */
     function getPendingLabels(config) {
         return {
             available: getConfigString(config, 'pendingstatusavailable'),
@@ -119,53 +124,82 @@ define(['core/templates'], function (Templates) {
      *
      * @param {Object} config Widget configuration.
      * @returns {number}
-     **/
+     */
     function getNormalizedValue(config) {
-        var rawvalue = config && Number.isFinite(Number(config.value)) ? Number(config.value) : 0;
+        var rawvalue = 0;
+
+        if (config && Number.isFinite(Number(config.value))) {
+            rawvalue = Number(config.value);
+        }
 
         return Math.max(0, Math.min(100, rawvalue));
     }
 
     /**
-     * Build the pending timeline items collection.
+     * Get the pending item detail text.
      *
-     * @param {Object} config Widget configuration.
-     * @param {Object} labels Localized labels.
-     * @returns {Array}
-     **/
-    function buildPendingItems(config, labels) {
-        var items = config && Array.isArray(config.pendingitems) ? config.pendingitems : [];
+     * @param {Object} item Pending item data.
+     * @returns {string}
+     */
+    function getPendingItemDetail(item) {
+        if (item && item.detail) {
+            return item.detail;
+        }
 
-        return items.map(function (item) {
-            return buildPendingItemContext(item, labels);
-        });
+        if (item && item.name) {
+            return item.name;
+        }
+
+        return '';
+    }
+
+    /**
+     * Get the pending item status label.
+     *
+     * @param {boolean} available Whether the item is available.
+     * @param {Object} labels Localized labels.
+     * @returns {string}
+     */
+    function getPendingStatusLabel(available, labels) {
+        if (available) {
+            return labels.available;
+        }
+
+        return labels.locked;
+    }
+
+    /**
+     * Get the pending item status CSS class.
+     *
+     * @param {boolean} available Whether the item is available.
+     * @returns {string}
+     */
+    function getPendingStatusClass(available) {
+        if (available) {
+            return 'is-available';
+        }
+
+        return 'is-locked';
     }
 
     /**
      * Build the template context for one pending timeline item.
      *
-     * @param {Object} item
-     * @param {Object} labels
+     * @param {Object} item Pending item data.
+     * @param {Object} labels Localized labels.
      * @returns {Object}
-     **/
+     */
     function buildPendingItemContext(item, labels) {
         var available = Number(item && item.available) === 1;
         var url = item && item.url ? item.url : '';
-        var detail = '';
-
-        if (item && item.detail) {
-            detail = item.detail;
-        } else if (item && item.name) {
-            detail = item.name;
-        }
 
         return {
             name: item && item.name ? item.name : '',
-            detail: detail,
+            detail: getPendingItemDetail(item),
             type: item && item.type ? item.type : '',
             modname: normalizeToken(item && item.modname ? item.modname : ''),
-            status: available ? labels.available : labels.locked,
-            statusclass: available ? 'is-available' : 'is-locked',
+            status: getPendingStatusLabel(available, labels),
+            statusclass: getPendingStatusClass(available),
             url: url,
             hasurl: !!url,
             linklabel: item && item.linklabel ? item.linklabel : labels.open,
@@ -174,28 +208,88 @@ define(['core/templates'], function (Templates) {
     }
 
     /**
+     * Map one pending item into template context.
+     *
+     * @param {Object} item Pending item data.
+     * @param {Object} labels Localized labels.
+     * @returns {Object}
+     */
+    function mapPendingItem(item, labels) {
+        return buildPendingItemContext(item, labels);
+    }
+
+    /**
+     * Build the pending timeline items collection.
+     *
+     * @param {Object} config Widget configuration.
+     * @param {Object} labels Localized labels.
+     * @returns {Array}
+     */
+    function buildPendingItems(config, labels) {
+        var items = config && Array.isArray(config.pendingitems) ? config.pendingitems : [];
+
+        return items.map(function(item) {
+            return mapPendingItem(item, labels);
+        });
+    }
+
+    /**
+     * Build the static widget labels.
+     *
+     * @param {Object} config Widget configuration.
+     * @returns {Object}
+     */
+    function buildWidgetLabels(config) {
+        return {
+            label: getConfigString(config, 'label'),
+            maxlabel: getConfigString(config, 'maxlabel') || '100%',
+            pendingbuttonlabel: getConfigString(config, 'pendingbuttonlabel'),
+            pendingtitle: getConfigString(config, 'pendingtitle'),
+            closemodal: getConfigString(config, 'closemodal'),
+            pendingempty: getConfigString(config, 'pendingempty')
+        };
+    }
+
+    /**
+     * Build widget display flags.
+     *
+     * @param {Object} config Widget configuration.
+     * @param {Array} pendingitems Pending items.
+     * @returns {Object}
+     */
+    function buildWidgetFlags(config, pendingitems) {
+        return {
+            showpercentage: getConfigFlag(config, 'showpercentage', true),
+            showpendingbutton: getConfigFlag(config, 'showpendingbutton', false),
+            haspendingitems: pendingitems.length > 0
+        };
+    }
+
+    /**
      * Build the full Mustache context for the widget.
      *
-     * @param {Object} config
+     * @param {Object} config Widget configuration.
      * @returns {Object}
-     **/
+     */
     function buildContext(config) {
         var labels = getPendingLabels(config);
         var value = getNormalizedValue(config);
         var pendingitems = buildPendingItems(config, labels);
+        var widgetlabels = buildWidgetLabels(config);
+        var widgetflags = buildWidgetFlags(config, pendingitems);
 
         return {
-            label: getConfigString(config, 'label'),
+            label: widgetlabels.label,
             value: value,
             percentage: value + '%',
-            maxlabel: getConfigString(config, 'maxlabel') || '100%',
-            showpercentage: getConfigFlag(config, 'showpercentage', true),
-            showpendingbutton: getConfigFlag(config, 'showpendingbutton', false),
-            pendingbuttonlabel: getConfigString(config, 'pendingbuttonlabel'),
-            pendingtitle: getConfigString(config, 'pendingtitle'),
-            closemodal: getConfigString(config, 'closemodal'),
-            pendingempty: getConfigString(config, 'pendingempty'),
-            haspendingitems: pendingitems.length > 0,
+            maxlabel: widgetlabels.maxlabel,
+            showpercentage: widgetflags.showpercentage,
+            showpendingbutton: widgetflags.showpendingbutton,
+            pendingbuttonlabel: widgetlabels.pendingbuttonlabel,
+            pendingtitle: widgetlabels.pendingtitle,
+            closemodal: widgetlabels.closemodal,
+            pendingempty: widgetlabels.pendingempty,
+            haspendingitems: widgetflags.haspendingitems,
             pendingitems: pendingitems
         };
     }
@@ -203,11 +297,12 @@ define(['core/templates'], function (Templates) {
     /**
      * Hide the pending-items modal.
      *
-     * @param {HTMLElement} container
+     * @param {HTMLElement} container Widget container.
      * @returns {void}
-     **/
+     */
     function closeModal(container) {
         var modal = container.querySelector('.local-courseprogresspro__modal');
+
         if (!modal) {
             return;
         }
@@ -219,11 +314,12 @@ define(['core/templates'], function (Templates) {
     /**
      * Show the pending-items modal.
      *
-     * @param {HTMLElement} container
+     * @param {HTMLElement} container Widget container.
      * @returns {void}
-     **/
+     */
     function openModal(container) {
         var modal = container.querySelector('.local-courseprogresspro__modal');
+
         if (!modal) {
             return;
         }
@@ -233,48 +329,106 @@ define(['core/templates'], function (Templates) {
     }
 
     /**
+     * Handle click interactions in the widget container.
+     *
+     * @param {HTMLElement} container Widget container.
+     * @param {Event} event Browser click event.
+     * @returns {void}
+     */
+    function handleContainerClick(container, event) {
+        var action = event.target.closest('[data-action]');
+        var currentaction = null;
+
+        if (!action) {
+            return;
+        }
+
+        currentaction = action.getAttribute('data-action');
+
+        if (currentaction === 'open-pending') {
+            openModal(container);
+            return;
+        }
+
+        if (currentaction === 'close-pending') {
+            closeModal(container);
+        }
+    }
+
+    /**
+     * Handle global keydown interactions for the widget.
+     *
+     * @param {HTMLElement} container Widget container.
+     * @param {KeyboardEvent} event Keyboard event.
+     * @returns {void}
+     */
+    function handleDocumentKeydown(container, event) {
+        if (event.key === 'Escape') {
+            closeModal(container);
+        }
+    }
+
+    /**
      * Bind modal open and close interactions once.
      *
-     * @param {HTMLElement} container
+     * @param {HTMLElement} container Widget container.
      * @returns {void}
-     **/
+     */
     function bindModal(container) {
         if (container.dataset.bound === '1') {
             return;
         }
 
         container.dataset.bound = '1';
-        container.addEventListener('click', function (event) {
-            var action = event.target.closest('[data-action]');
-            if (!action) {
-                return;
-            }
 
-            var currentAction = action.getAttribute('data-action');
-            if (currentAction === 'open-pending') {
-                openModal(container);
-            }
-
-            if (currentAction === 'close-pending') {
-                closeModal(container);
-            }
+        container.addEventListener('click', function(event) {
+            handleContainerClick(container, event);
         });
 
-        document.addEventListener('keydown', function (event) {
-            if (event.key === 'Escape') {
-                closeModal(container);
-            }
+        document.addEventListener('keydown', function(event) {
+            handleDocumentKeydown(container, event);
         });
+    }
+
+    /**
+     * Render the widget template into the container.
+     *
+     * @param {HTMLElement} container Widget container.
+     * @param {Object} config Widget configuration.
+     * @returns {Promise}
+     */
+    function renderWidget(container, config) {
+        return Templates.renderForPromise('local_courseprogresspro/progress_widget', buildContext(config))
+            .then(function(rendered) {
+                return Templates.replaceNodeContents(container, rendered.html, rendered.js);
+            })
+            .then(function() {
+                bindModal(container);
+                return container;
+            });
+    }
+
+    /**
+     * Handle rendering errors and reset initialization state.
+     *
+     * @param {HTMLElement} container Widget container.
+     * @param {*} error Rendering error.
+     * @returns {Promise}
+     */
+    function handleRenderError(container, error) {
+        container.dataset.initialized = '';
+        return Promise.reject(error);
     }
 
     /**
      * Initialize and render the progress widget.
      *
-     * @param {Object} config
+     * @param {Object} config Widget configuration.
      * @returns {Promise|undefined}
-     **/
+     */
     function init(config) {
         var container = getOrCreateContainer();
+
         if (container.dataset.initialized === '1') {
             return;
         }
@@ -282,17 +436,9 @@ define(['core/templates'], function (Templates) {
         container.dataset.initialized = '1';
         moveToCourseContent(container);
 
-        return Templates.renderForPromise('local_courseprogresspro/progress_widget', buildContext(config))
-            .then(function (rendered) {
-                return Templates.replaceNodeContents(container, rendered.html, rendered.js);
-            })
-            .then(function () {
-                bindModal(container);
-                return container;
-            })
-            .catch(function (error) {
-                container.dataset.initialized = '';
-                throw error;
+        return renderWidget(container, config)
+            .catch(function(error) {
+                return handleRenderError(container, error);
             });
     }
 

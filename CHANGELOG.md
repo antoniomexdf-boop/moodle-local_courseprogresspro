@@ -2,6 +2,12 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.14] - 2026-03-15
+
+### Changed
+
+- Prepared a fresh review-ready package after confirming the AMD and CSS fixes that address the last reported `grunt` and `stylelint` issues.
+
 ## [0.7.13] - 2026-03-15
 
 ### Changed
