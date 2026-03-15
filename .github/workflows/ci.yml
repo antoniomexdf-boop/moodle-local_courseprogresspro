@@ -17,14 +17,47 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        moodle-branch:
-          - MOODLE_404_STABLE
-          - MOODLE_405_STABLE
-        php:
-          - '8.1'
-          - '8.2'
-        database:
-          - pgsql
+        include:
+          # Moodle 4.3 supports PHP 8.0-8.2
+          - moodle-branch: MOODLE_403_STABLE
+            php: '8.0'
+            database: pgsql
+          - moodle-branch: MOODLE_403_STABLE
+            php: '8.1'
+            database: pgsql
+          - moodle-branch: MOODLE_403_STABLE
+            php: '8.2'
+            database: pgsql
+
+          # Moodle 4.4 supports PHP 8.1-8.3
+          - moodle-branch: MOODLE_404_STABLE
+            php: '8.1'
+            database: pgsql
+          - moodle-branch: MOODLE_404_STABLE
+            php: '8.2'
+            database: pgsql
+          - moodle-branch: MOODLE_404_STABLE
+            php: '8.3'
+            database: pgsql
+
+          # Moodle 4.5 supports PHP 8.1-8.3
+          - moodle-branch: MOODLE_405_STABLE
+            php: '8.1'
+            database: pgsql
+          - moodle-branch: MOODLE_405_STABLE
+            php: '8.2'
+            database: pgsql
+          - moodle-branch: MOODLE_405_STABLE
+            php: '8.3'
+            database: pgsql
+
+          # Optional: Moodle 5.0 supports PHP 8.2-8.4
+          - moodle-branch: MOODLE_500_STABLE
+            php: '8.2'
+            database: pgsql
+          - moodle-branch: MOODLE_500_STABLE
+            php: '8.3'
+            database: pgsql
 
     services:
       postgres:
@@ -44,6 +77,7 @@ jobs:
       COMPOSER_PROCESS_TIMEOUT: 0
       COMPOSER_NO_INTERACTION: 1
       COMPOSER_NO_AUDIT: 1
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
     steps:
       - name: Checkout repository
@@ -55,7 +89,7 @@ jobs:
           php-version: ${{ matrix.php }}
           extensions: >
             curl, dom, gd, intl, json, mbstring, openssl,
-            pdo, pgsql, simplexml, soap, xml, xmlreader, zip
+            pdo, pgsql, simplexml, soap, xml, xmlreader, zip, sodium
           coverage: none
           tools: composer:v2
           ini-values: max_input_vars=5000
@@ -63,7 +97,7 @@ jobs:
       - name: Cache Composer downloads
         uses: actions/cache@v4
         with:
-          path: ~/.composer/cache/files
+          path: ~/.cache/composer
           key: composer-${{ runner.os }}-${{ matrix.php }}-${{ matrix.moodle-branch }}
           restore-keys: |
             composer-${{ runner.os }}-${{ matrix.php }}-
@@ -72,5 +106,60 @@ jobs:
       - name: Install moodle-plugin-ci outside repository
         run: |
           rm -rf /tmp/moodle-plugin-ci
-          composer create-project --no-dev --prefer-dist moodlehq/moodle-plugin-ci /tmp/moodle-plugin-c
+          composer create-project --no-dev --prefer-dist moodlehq/moodle-plugin-ci /tmp/moodle-plugin-ci 4.5.10
+          echo "/tmp/moodle-plugin-ci/bin" >> "$GITHUB_PATH"
+          echo "/tmp/moodle-plugin-ci/vendor/bin" >> "$GITHUB_PATH"
+
+      - name: Wait for PostgreSQL
+        run: |
+          for i in {1..20}; do
+            pg_isready -h 127.0.0.1 -U postgres -d postgres && exit 0
+            sleep 2
+          done
+          echo "PostgreSQL did not become ready in time"
+          exit 1
+
+      - name: Install Moodle
+        run: |
+          moodle-plugin-ci install \
+            --plugin . \
+            --db-type=pgsql \
+            --db-host=127.0.0.1 \
+            --db-user=postgres \
+            --db-pass=postgres \
+            --db-name=moodle \
+            --no-init
+        env:
+          MOODLE_BRANCH: ${{ matrix.moodle-branch }}
+
+      - name: PHP lint
+        run: moodle-plugin-ci phplint .
+
+      - name: Moodle code checker
+        id: phpcs
+        run: moodle-plugin-ci phpcs --max-warnings=0 .
+
+      - name: Debug PHPCS details
+        if: failure() && steps.phpcs.outcome == 'failure'
+        run: |
+          echo "=== Running raw PHPCS for detailed output ==="
+          /tmp/moodle-plugin-ci/vendor/bin/phpcs \
+            --standard=Moodle \
+            --report=full \
+            local/courseprogresspro || true
+
+      - name: Moodle PHPDoc checker
+        run: moodle-plugin-ci phpdoc .
+
+      - name: Validate plugin
+        run: moodle-plugin-ci validate .
+
+      - name: Check upgrade savepoints
+        run: moodle-plugin-ci savepoints .
+
+      - name: Mustache lint
+        run: moodle-plugin-ci mustache .
+
+      - name: PHPUnit tests
+        run: moodle-plugin-ci phpunit .
 
