@@ -2,6 +2,13 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.18] - 2026-03-15
+
+### Fixed
+
+- Restored the full Moodle boilerplate metadata block in `settings.php`.
+- Rebuilt `amd/build/progress.min.js` as a compact single-line artifact aligned with the current AMD source.
+
 ## [0.7.17] - 2026-03-15
 
 ### Fixed
