@@ -161,9 +161,10 @@ function local_courseprogresspro_get_moodle_progress_snapshot(
 }
 
 /**
- * Determines whether a module should be counted.
+ * Decide whether a course module should count toward progress.
  *
- * @param cm_info $cm
+ * @param cm_info $cm Course module information.
+ * @param array $settings Plugin calculation settings.
  * @return bool
  */
 function local_courseprogresspro_should_count_cm(cm_info $cm, array $settings): bool {

@@ -2,6 +2,12 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.17] - 2026-03-15
+
+### Fixed
+
+- Completed the PHPDoc parameter list for `local_courseprogresspro_should_count_cm()` to satisfy Moodle PHPDoc checks.
+
 ## [0.7.16] - 2026-03-15
 
 ### Changed
