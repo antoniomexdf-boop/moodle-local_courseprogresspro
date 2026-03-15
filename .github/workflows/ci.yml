@@ -140,13 +140,14 @@ jobs:
         run: moodle-plugin-ci phpcs --max-warnings=0 .
 
       - name: Debug PHPCS details
-        if: failure() && steps.phpcs.outcome == 'failure'
-        run: |
-          echo "=== Running raw PHPCS for detailed output ==="
-          /tmp/moodle-plugin-ci/vendor/bin/phpcs \
-            --standard=Moodle \
-            --report=full \
-            local/courseprogresspro || true
+  if: failure() && steps.phpcs.outcome == 'failure'
+  run: |
+    echo "=== Running raw PHPCS for detailed output ==="
+    /tmp/moodle-plugin-ci/vendor/bin/phpcs \
+      --standard=Moodle \
+      --report=full \
+      --extensions=php \
+      .
 
       - name: Moodle PHPDoc checker
         run: moodle-plugin-ci phpdoc .
