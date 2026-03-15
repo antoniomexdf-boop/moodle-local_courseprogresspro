@@ -2,6 +2,12 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.13] - 2026-03-15
+
+### Changed
+
+- Normalized AMD JSDoc wording to a more canonical review-friendly style while keeping the previous code-quality fixes in place.
+
 ## [0.7.12] - 2026-03-15
 
 ### Fixed

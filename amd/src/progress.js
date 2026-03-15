@@ -20,26 +20,26 @@
  * @copyright  2026 Jesus Antonio Jimenez Avina <antoniomexdf@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-define(['core/templates'], function(Templates) {
+define(['core/templates'], function (Templates) {
     /**
-     * Returns a string configuration value or an empty fallback.
+     * Get a string configuration value.
      *
      * @param {Object} config Widget configuration.
      * @param {string} key Configuration key.
      * @returns {string}
-     */
+     **/
     function getConfigString(config, key) {
         return config && config[key] ? config[key] : '';
     }
 
     /**
-     * Returns whether a numeric config flag is enabled.
+     * Get whether a numeric config flag is enabled.
      *
      * @param {Object} config Widget configuration.
      * @param {string} key Configuration key.
      * @param {boolean} fallback Default value.
      * @returns {boolean}
-     */
+     **/
     function getConfigFlag(config, key, fallback) {
         if (!config || typeof config[key] === 'undefined') {
             return fallback;
@@ -49,10 +49,10 @@ define(['core/templates'], function(Templates) {
     }
 
     /**
-     * Creates or reuses the root widget container.
+     * Get or create the root widget container.
      *
      * @returns {HTMLElement}
-     */
+     **/
     function getOrCreateContainer() {
         var container = document.getElementById('local-courseprogresspro');
         if (container) {
@@ -68,11 +68,11 @@ define(['core/templates'], function(Templates) {
     }
 
     /**
-     * Moves the widget container into the main course content area.
+     * Move the widget container into the main course content area.
      *
      * @param {HTMLElement} container
      * @returns {void}
-     */
+     **/
     function moveToCourseContent(container) {
         var selectors = [
             '#region-main',
@@ -91,21 +91,21 @@ define(['core/templates'], function(Templates) {
     }
 
     /**
-     * Normalizes a token for safe CSS class usage.
+     * Normalize a token for safe CSS class usage.
      *
      * @param {string} value
      * @returns {string}
-     */
+     **/
     function normalizeToken(value) {
         return String(value || '').toLowerCase().replace(/[^a-z0-9_-]/g, '');
     }
 
     /**
-     * Returns the localized labels for pending items.
+     * Get localized labels for pending items.
      *
      * @param {Object} config Widget configuration.
      * @returns {Object}
-     */
+     **/
     function getPendingLabels(config) {
         return {
             available: getConfigString(config, 'pendingstatusavailable'),
@@ -115,11 +115,11 @@ define(['core/templates'], function(Templates) {
     }
 
     /**
-     * Returns the normalized percentage value.
+     * Get the normalized percentage value.
      *
      * @param {Object} config Widget configuration.
      * @returns {number}
-     */
+     **/
     function getNormalizedValue(config) {
         var rawvalue = config && Number.isFinite(Number(config.value)) ? Number(config.value) : 0;
 
@@ -127,27 +127,27 @@ define(['core/templates'], function(Templates) {
     }
 
     /**
-     * Builds the pending timeline items collection.
+     * Build the pending timeline items collection.
      *
      * @param {Object} config Widget configuration.
      * @param {Object} labels Localized labels.
      * @returns {Array}
-     */
+     **/
     function buildPendingItems(config, labels) {
         var items = config && Array.isArray(config.pendingitems) ? config.pendingitems : [];
 
-        return items.map(function(item) {
+        return items.map(function (item) {
             return buildPendingItemContext(item, labels);
         });
     }
 
     /**
-     * Builds the template context for one pending timeline item.
+     * Build the template context for one pending timeline item.
      *
      * @param {Object} item
      * @param {Object} labels
      * @returns {Object}
-     */
+     **/
     function buildPendingItemContext(item, labels) {
         var available = Number(item && item.available) === 1;
         var url = item && item.url ? item.url : '';
@@ -174,11 +174,11 @@ define(['core/templates'], function(Templates) {
     }
 
     /**
-     * Builds the full Mustache context for the widget.
+     * Build the full Mustache context for the widget.
      *
      * @param {Object} config
      * @returns {Object}
-     */
+     **/
     function buildContext(config) {
         var labels = getPendingLabels(config);
         var value = getNormalizedValue(config);
@@ -201,11 +201,11 @@ define(['core/templates'], function(Templates) {
     }
 
     /**
-     * Hides the pending-items modal.
+     * Hide the pending-items modal.
      *
      * @param {HTMLElement} container
      * @returns {void}
-     */
+     **/
     function closeModal(container) {
         var modal = container.querySelector('.local-courseprogresspro__modal');
         if (!modal) {
@@ -217,11 +217,11 @@ define(['core/templates'], function(Templates) {
     }
 
     /**
-     * Shows the pending-items modal.
+     * Show the pending-items modal.
      *
      * @param {HTMLElement} container
      * @returns {void}
-     */
+     **/
     function openModal(container) {
         var modal = container.querySelector('.local-courseprogresspro__modal');
         if (!modal) {
@@ -233,18 +233,18 @@ define(['core/templates'], function(Templates) {
     }
 
     /**
-     * Binds modal open and close interactions once.
+     * Bind modal open and close interactions once.
      *
      * @param {HTMLElement} container
      * @returns {void}
-     */
+     **/
     function bindModal(container) {
         if (container.dataset.bound === '1') {
             return;
         }
 
         container.dataset.bound = '1';
-        container.addEventListener('click', function(event) {
+        container.addEventListener('click', function (event) {
             var action = event.target.closest('[data-action]');
             if (!action) {
                 return;
@@ -260,7 +260,7 @@ define(['core/templates'], function(Templates) {
             }
         });
 
-        document.addEventListener('keydown', function(event) {
+        document.addEventListener('keydown', function (event) {
             if (event.key === 'Escape') {
                 closeModal(container);
             }
@@ -268,11 +268,11 @@ define(['core/templates'], function(Templates) {
     }
 
     /**
-     * Initializes and renders the progress widget.
+     * Initialize and render the progress widget.
      *
      * @param {Object} config
      * @returns {Promise|undefined}
-     */
+     **/
     function init(config) {
         var container = getOrCreateContainer();
         if (container.dataset.initialized === '1') {
@@ -283,14 +283,14 @@ define(['core/templates'], function(Templates) {
         moveToCourseContent(container);
 
         return Templates.renderForPromise('local_courseprogresspro/progress_widget', buildContext(config))
-            .then(function(rendered) {
+            .then(function (rendered) {
                 return Templates.replaceNodeContents(container, rendered.html, rendered.js);
             })
-            .then(function() {
+            .then(function () {
                 bindModal(container);
                 return container;
             })
-            .catch(function(error) {
+            .catch(function (error) {
                 container.dataset.initialized = '';
                 throw error;
             });
