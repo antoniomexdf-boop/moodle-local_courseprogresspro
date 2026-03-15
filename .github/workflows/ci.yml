@@ -18,7 +18,7 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Moodle 4.3 supports PHP 8.0-8.2
+          # Moodle 4.3
           - moodle-branch: MOODLE_403_STABLE
             php: '8.0'
             database: pgsql
@@ -29,7 +29,7 @@ jobs:
             php: '8.2'
             database: pgsql
 
-          # Moodle 4.4 supports PHP 8.1-8.3
+          # Moodle 4.4
           - moodle-branch: MOODLE_404_STABLE
             php: '8.1'
             database: pgsql
@@ -40,7 +40,7 @@ jobs:
             php: '8.3'
             database: pgsql
 
-          # Moodle 4.5 supports PHP 8.1-8.3
+          # Moodle 4.5
           - moodle-branch: MOODLE_405_STABLE
             php: '8.1'
             database: pgsql
@@ -51,7 +51,7 @@ jobs:
             php: '8.3'
             database: pgsql
 
-          # Optional: Moodle 5.0 supports PHP 8.2-8.4
+          # Moodle 5.0
           - moodle-branch: MOODLE_500_STABLE
             php: '8.2'
             database: pgsql
@@ -140,14 +140,14 @@ jobs:
         run: moodle-plugin-ci phpcs --max-warnings=0 .
 
       - name: Debug PHPCS details
-  if: failure() && steps.phpcs.outcome == 'failure'
-  run: |
-    echo "=== Running raw PHPCS for detailed output ==="
-    /tmp/moodle-plugin-ci/vendor/bin/phpcs \
-      --standard=Moodle \
-      --report=full \
-      --extensions=php \
-      .
+        if: failure() && steps.phpcs.outcome == 'failure'
+        run: |
+          echo "=== Running raw PHPCS for detailed output ==="
+          /tmp/moodle-plugin-ci/vendor/bin/phpcs \
+            --standard=Moodle \
+            --report=full \
+            --extensions=php \
+            .
 
       - name: Moodle PHPDoc checker
         run: moodle-plugin-ci phpdoc .
