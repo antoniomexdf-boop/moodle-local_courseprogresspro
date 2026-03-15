@@ -2,6 +2,44 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.9] - 2026-03-15
+
+### Changed
+
+- Removed repository-only guidance documents from the distributable package to keep the submission focused on plugin code and essential end-user documentation.
+
+## [0.7.8] - 2026-03-15
+
+### Changed
+
+- Removed remaining non-English distribution documentation and trimmed package documentation for Moodle review submission.
+
+## [0.7.7] - 2026-03-15
+
+### Changed
+
+- Clarified in settings and documentation that course sections are never counted as progress units and are only used as navigation context in the pending timeline.
+
+## [0.7.6] - 2026-03-14
+
+### Fixed
+
+- Updated remaining source headers to align with Moodle plugin review expectations.
+- Removed the bundled Spanish language pack from the distributable package so releases ship with `lang/en` only.
+
+## [0.7.5] - 2026-03-14
+
+### Fixed
+
+- Removed hard-coded user-facing fallback text from the AMD renderer so visible UI labels now depend on Moodle language strings passed from PHP.
+- Kept the JS build artifact synchronized after the string API compliance update.
+
+## [0.7.4] - 2026-03-14
+
+### Fixed
+
+- Added explicit Moodle GPL header metadata to remaining source files that were still missing `@copyright` and `@license` markers.
+
 ## [0.7.3] - 2026-03-14
 
 ### Changed

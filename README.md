@@ -2,6 +2,8 @@
 
 Pro edition of Course Progress for Moodle.
 
+Current release: `0.7.9` (`2026031502`)
+
 ## Repository
 
 - GitHub: https://github.com/antoniomexdf-boop/moodle-local_courseprogresspro
@@ -16,7 +18,6 @@ Pro edition of Course Progress for Moodle.
 
 - Author: Jesus Antonio Jimenez Avina
 - Email: antoniomexdf@gmail.com
-- Email (secondary): antoniojamx@gmail.com
 
 ## Features
 
@@ -27,6 +28,7 @@ Pro edition of Course Progress for Moodle.
 - Availability and activity-type highlighting in pending list.
 - Quiz pending detail shown as one pending action with remaining-question context.
 - Completion-aware resource counting mode.
+- Course sections are not counted as progress units; they are only used as navigation context or fallback links.
 - Optional legacy custom progress mode for compatibility.
 - Global enable/disable switch.
 
@@ -46,11 +48,12 @@ Pro edition of Course Progress for Moodle.
 ## Documentation
 
 - User manual (EN): `MANUAL_EN.md`
-- Manual de uso (ES): `MANUAL_ES.md`
 - Changelog: `CHANGELOG.md`
-- Contributing guide: `CONTRIBUTING.md`
-- GitHub release guide: `GITHUB_RELEASE.md`
-- Moodle plugins publish guide: `PUBLISHING.md`
+
+## Language Packs
+
+- The plugin package ships with English strings only, following Moodle plugin directory guidance.
+- Additional translations should be contributed through Moodle translation infrastructure after approval.
 
 ## Screenshots
 

@@ -14,6 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * English language strings for local_courseprogresspro.
+ *
+ * @package    local_courseprogresspro
+ * @copyright  2026 Jesus Antonio Jimenez Avina <antoniomexdf@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
 $string['pluginname'] = 'Course Progress Pro';
 $string['progresslabel'] = 'Your course progress';
 $string['progresssummary'] = 'Completed: {$a}%';
@@ -23,13 +31,13 @@ $string['settingsgeneral'] = 'General settings';
 $string['settingsenabled'] = 'Enable plugin';
 $string['settingsenabled_desc'] = 'If disabled, the progress UI is not shown to students.';
 $string['settingsmainprogresssource'] = 'Main progress source';
-$string['settingsmainprogresssource_desc'] = 'Defines whether the main progress bar follows Moodle course completion or the plugin custom calculation.';
+$string['settingsmainprogresssource_desc'] = 'Defines whether the main progress bar follows Moodle course completion or the plugin custom calculation. Course sections are never counted as progress units.';
 $string['settingsmainprogresssource_moodle'] = 'Moodle course completion';
 $string['settingsmainprogresssource_custom'] = 'Plugin custom progress';
 $string['settingscountresources'] = 'Count resources';
-$string['settingscountresources_desc'] = 'Includes page, URL, file, book, and folder resources in the progress calculation.';
+$string['settingscountresources_desc'] = 'Includes page, URL, file, book, and folder resources in the progress calculation. Course sections are used only for navigation context and are never counted.';
 $string['settingsresourcesrequirecompletion'] = 'Require completion tracking for resources';
-$string['settingsresourcesrequirecompletion_desc'] = 'When enabled, resources only count if the activity has Moodle completion tracking configured. This avoids using log-based view detection.';
+$string['settingsresourcesrequirecompletion_desc'] = 'When enabled, resources only count if the activity has Moodle completion tracking configured. This avoids using log-based view detection. Course sections are never counted because they do not provide completion evidence.';
 $string['settingsquizmode'] = 'Quiz calculation mode';
 $string['settingsquizmode_desc'] = 'Defines whether a quiz counts by answered questions or as a single activity.';
 $string['settingsquizmode_questions'] = 'Count by questions';

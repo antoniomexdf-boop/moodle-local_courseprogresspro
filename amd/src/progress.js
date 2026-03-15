@@ -77,9 +77,9 @@ define(['core/templates'], function(Templates) {
     function buildContext(config) {
         var value = config && Number.isFinite(Number(config.value)) ? Number(config.value) : 0;
         var labels = {
-            available: config && config.pendingstatusavailable ? config.pendingstatusavailable : 'Disponible ahora',
-            locked: config && config.pendingstatuslocked ? config.pendingstatuslocked : 'Aun no disponible',
-            open: config && config.pendingopenactivity ? config.pendingopenactivity : 'Abrir actividad'
+            available: config && config.pendingstatusavailable ? config.pendingstatusavailable : '',
+            locked: config && config.pendingstatuslocked ? config.pendingstatuslocked : '',
+            open: config && config.pendingopenactivity ? config.pendingopenactivity : ''
         };
 
         value = Math.max(0, Math.min(100, value));
@@ -90,16 +90,16 @@ define(['core/templates'], function(Templates) {
             }) : [];
 
         return {
-            label: config && config.label ? config.label : 'Barra de progreso',
+            label: config && config.label ? config.label : '',
             value: value,
             percentage: value + '%',
             maxlabel: config && config.maxlabel ? config.maxlabel : '100%',
             showpercentage: !config || Number(config.showpercentage) === 1,
             showpendingbutton: config && Number(config.showpendingbutton) === 1,
-            pendingbuttonlabel: config && config.pendingbuttonlabel ? config.pendingbuttonlabel : 'Ver acciones pendientes',
-            pendingtitle: config && config.pendingtitle ? config.pendingtitle : 'Acciones pendientes',
-            closemodal: config && config.closemodal ? config.closemodal : 'Cerrar ventana',
-            pendingempty: config && config.pendingempty ? config.pendingempty : 'No hay actividades pendientes.',
+            pendingbuttonlabel: config && config.pendingbuttonlabel ? config.pendingbuttonlabel : '',
+            pendingtitle: config && config.pendingtitle ? config.pendingtitle : '',
+            closemodal: config && config.closemodal ? config.closemodal : '',
+            pendingempty: config && config.pendingempty ? config.pendingempty : '',
             haspendingitems: pendingitems.length > 0,
             pendingitems: pendingitems
         };

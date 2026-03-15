@@ -3,6 +3,7 @@
 ## Overview
 
 `local_courseprogresspro` provides an advanced progress interface for course pages.
+This distribution package ships with English strings only for Moodle plugin directory compliance.
 
 ## Repository
 
@@ -12,7 +13,6 @@
 
 - Author: Jesus Antonio Jimenez Avina
 - Email: antoniomexdf@gmail.com
-- Email (secondary): antoniojamx@gmail.com
 
 ## Features
 
@@ -24,6 +24,7 @@
 - Pending timeline keeps direct access links visible for activities and section fallbacks
 - Quiz items appear as one pending action with remaining-question detail
 - Completion-aware resource counting mode
+- Course sections are never counted as progress because they do not expose reliable completion evidence
 - Global plugin enable/disable
 
 ## Student Experience
@@ -59,6 +60,10 @@ Available settings:
 - Show pending actions button
 - Header text
 
+Notes:
+- Course sections are used only as context and fallback navigation in the pending timeline.
+- Course sections are not counted as completed or pending progress units.
+
 ## Screenshots
 
 ![Pro Progress Bar](screenshots/courseprogresspro_01.png)
@@ -71,5 +76,5 @@ No personal data is stored.
 
 ## Release
 
-- Release: `0.7.3`
-- Version: `2026031405`
+- Release: `0.7.9`
+- Version: `2026031502`

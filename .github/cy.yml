@@ -1,0 +1,103 @@
+name: Moodle Plugin CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        moodle-branch: [MOODLE_404_STABLE]
+        php: [8.1]
+        database: [pgsql]
+
+    services:
+      postgres:
+        image: postgres:13
+        env:
+          POSTGRES_DB: moodle
+          POSTGRES_USER: moodle
+          POSTGRES_PASSWORD: moodle
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer
+
+      - name: Install moodle-plugin-ci
+        run: |
+          composer create-project \
+            --no-dev \
+            --prefer-dist \
+            moodlehq/moodle-plugin-ci ci ^4
+
+      - name: Wait for PostgreSQL
+        run: |
+          until pg_isready -h localhost -p 5432
+          do
+            echo "Waiting for postgres..."
+            sleep 2
+          done
+
+      - name: Install Moodle
+        run: |
+          ci/bin/moodle-plugin-ci install \
+            --db-host=localhost \
+            --db-user=moodle \
+            --db-pass=moodle \
+            --db-name=moodle \
+            --db-type=pgsql \
+            --moodle-branch=${{ matrix.moodle-branch }}
+
+      - name: PHP lint
+        run: |
+          ci/bin/moodle-plugin-ci phplint
+
+      - name: Moodle code checker
+        run: |
+          ci/bin/moodle-plugin-ci phpcs --max-warnings=0 .
+
+      # 🔎 BLOQUE DE DEBUG QUE AGREGAMOS
+      - name: Debug PHPCS details
+        if: failure()
+        run: |
+          echo "=== Running raw PHPCS for detailed output ==="
+          vendor/bin/phpcs -p --standard=Moodle .
+
+      - name: Moodle PHPDoc checker
+        run: |
+          ci/bin/moodle-plugin-ci phpdoc
+
+      - name: Validate plugin
+        run: |
+          ci/bin/moodle-plugin-ci validate
+
+      - name: Check upgrade savepoints
+        run: |
+          ci/bin/moodle-plugin-ci savepoints
+
+      - name: Mustache lint
+        run: |
+          ci/bin/moodle-plugin-ci mustache
+
+      - name: PHPUnit tests
+        run: |
+          ci/bin/moodle-plugin-ci phpunit
+
