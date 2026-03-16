@@ -2,6 +2,12 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.32] - 2026-03-16
+
+### Fixed
+
+- Restored the full Moodle boilerplate header at the top of `version.php`, `settings.php`, and `classes/privacy/provider.php` while keeping the required file docblocks.
+
 ## [0.7.31] - 2026-03-16
 
 ### Fixed
