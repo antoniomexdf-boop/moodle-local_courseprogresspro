@@ -2,6 +2,12 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.27] - 2026-03-16
+
+### Fixed
+
+- Updated the AMD build artifact and added `amd/build/progress.min.js.map` so the distribution package includes the expected generated build pair.
+
 ## [0.7.26] - 2026-03-16
 
 ### Changed
