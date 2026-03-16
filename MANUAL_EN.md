@@ -21,6 +21,7 @@ This distribution package ships with English strings only for Moodle plugin dire
 - Pending actions summary
 - Pending actions button
 - Pending timeline/modal with links and availability state
+- Pending modal manages keyboard focus for better accessibility
 - Pending timeline keeps direct access links visible for activities and section fallbacks
 - Quiz items appear as one pending action with remaining-question detail
 - Completion-aware resource counting mode
@@ -33,6 +34,7 @@ Students see a generic progress UI; edition labels are not shown in the course i
 The main progress indicator follows official Moodle course progress by default.
 Pending items are presented as what remains to be completed, not as a second competing percentage.
 The pending summary is integrated into the action button for a cleaner layout.
+When the pending modal opens, keyboard focus moves to the close button and returns to the opening button when the modal closes.
 
 ## Requirements
 
@@ -76,5 +78,5 @@ No personal data is stored.
 
 ## Release
 
-- Release: `0.7.36`
-- Version: `2026031610`
+- Release: `0.7.37`
+- Version: `2026031611`

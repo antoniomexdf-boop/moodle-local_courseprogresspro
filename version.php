@@ -25,7 +25,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 $plugin->component = 'local_courseprogresspro';
-$plugin->version = 2026031610;
+$plugin->version = 2026031611;
 $plugin->requires = 2022112800; // Moodle 4.1+.
 $plugin->maturity = MATURITY_STABLE;
-$plugin->release = '0.7.36';
+$plugin->release = '0.7.37';

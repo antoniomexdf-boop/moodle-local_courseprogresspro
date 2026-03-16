@@ -2,7 +2,7 @@
 
 Pro edition of Course Progress for Moodle.
 
-Current release: `0.7.36` (`2026031610`)
+Current release: `0.7.37` (`2026031611`)
 
 ## Repository
 
@@ -25,6 +25,7 @@ Current release: `0.7.36` (`2026031610`)
 - Pending actions summary.
 - Pending actions button.
 - Pending timeline/modal with direct activity links.
+- Pending modal now moves keyboard focus to the close button and returns focus to the opening button when closed.
 - Availability and activity-type highlighting in pending list.
 - Quiz pending detail shown as one pending action with remaining-question context.
 - Completion-aware resource counting mode.

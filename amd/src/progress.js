@@ -238,6 +238,16 @@ define(['core/templates'], function(Templates) {
     }
 
     /**
+     * Get the close button inside the pending-items modal.
+     *
+     * @param {HTMLElement} container The widget root element.
+     * @returns {?HTMLElement} The close button element when present.
+     */
+    function getCloseButton(container) {
+        return container.querySelector('.local-courseprogresspro__close');
+    }
+
+    /**
      * Hide the pending-items modal.
      *
      * @param {HTMLElement} container The widget root element.
@@ -251,22 +261,33 @@ define(['core/templates'], function(Templates) {
 
         modal.hidden = true;
         document.body.classList.remove('local-courseprogresspro-modal-open');
+
+        if (container._localCourseProgressTrigger && typeof container._localCourseProgressTrigger.focus === 'function') {
+            container._localCourseProgressTrigger.focus();
+        }
     }
 
     /**
      * Show the pending-items modal.
      *
      * @param {HTMLElement} container The widget root element.
+     * @param {HTMLElement} trigger The element that opened the modal.
      * @returns {void}
      */
-    function openModal(container) {
+    function openModal(container, trigger) {
         var modal = container.querySelector('.local-courseprogresspro__modal');
+        var closeButton = getCloseButton(container);
         if (!modal) {
             return;
         }
 
+        container._localCourseProgressTrigger = trigger || null;
         modal.hidden = false;
         document.body.classList.add('local-courseprogresspro-modal-open');
+
+        if (closeButton && typeof closeButton.focus === 'function') {
+            closeButton.focus();
+        }
     }
 
     /**
@@ -289,7 +310,7 @@ define(['core/templates'], function(Templates) {
 
             var currentAction = action.getAttribute('data-action');
             if (currentAction === 'open-pending') {
-                openModal(container);
+                openModal(container, action);
             }
 
             if (currentAction === 'close-pending') {

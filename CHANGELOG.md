@@ -2,11 +2,11 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
-## [0.7.36] - 2026-03-16
+## [0.7.37] - 2026-03-16
 
 ### Changed
 
-- Verified that the rebuilt AMD source, build artifact, and sourcemap are internally consistent, then prepared a fresh validation package release.
+- Improved modal accessibility: keyboard focus now moves to the close button when the pending-actions modal opens and returns to the opening button when the modal closes.
 
 ## [0.7.35] - 2026-03-16
 
