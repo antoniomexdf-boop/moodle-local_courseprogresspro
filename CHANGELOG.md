@@ -2,6 +2,12 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.29] - 2026-03-16
+
+### Fixed
+
+- Recreated the AMD build files after deletion and replaced file-level PHP docblocks in `version.php` and `settings.php` with inline comments to match reviewer guidance.
+
 ## [0.7.28] - 2026-03-16
 
 ### Fixed
