@@ -2,7 +2,7 @@
 
 Pro edition of Course Progress for Moodle.
 
-Current release: `0.7.20` (`2026031513`)
+Current release: `0.7.21` (`2026031514`)
 
 ## Repository
 

@@ -2,6 +2,12 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.21] - 2026-03-15
+
+### Changed
+
+- Published a fresh review iteration after reconfirming the AMD JSDoc coverage, reduced `buildContext()` complexity, explicit promise returns, and conservative CSS width handling.
+
 ## [0.7.20] - 2026-03-15
 
 ### Fixed
