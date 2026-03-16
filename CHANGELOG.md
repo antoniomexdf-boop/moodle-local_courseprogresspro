@@ -2,6 +2,12 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.31] - 2026-03-16
+
+### Fixed
+
+- Restored file-level docblocks with explicit `@copyright` and `@license` tags in `version.php`, `settings.php`, and `classes/privacy/provider.php` to match reviewer guidance.
+
 ## [0.7.30] - 2026-03-16
 
 ### Fixed

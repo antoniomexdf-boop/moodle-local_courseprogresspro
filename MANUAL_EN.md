@@ -76,5 +76,5 @@ No personal data is stored.
 
 ## Release
 
-- Release: `0.7.30`
-- Version: `2026031604`
+- Release: `0.7.31`
+- Version: `2026031605`
