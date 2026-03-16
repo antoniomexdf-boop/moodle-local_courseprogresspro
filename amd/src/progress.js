@@ -21,12 +21,13 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 define(['core/templates'], function(Templates) {
+
     /**
      * Get a string configuration value.
      *
      * @param {Object} config Widget configuration.
      * @param {string} key Configuration key.
-     * @returns {string}
+     * @returns {string} The configuration string value or empty string.
      */
     function getConfigString(config, key) {
         return config && config[key] ? config[key] : '';
@@ -37,8 +38,8 @@ define(['core/templates'], function(Templates) {
      *
      * @param {Object} config Widget configuration.
      * @param {string} key Configuration key.
-     * @param {boolean} fallback Default value.
-     * @returns {boolean}
+     * @param {boolean} fallback Default value when key is absent.
+     * @returns {boolean} True when the flag value equals 1.
      */
     function getConfigFlag(config, key, fallback) {
         if (!config || typeof config[key] === 'undefined') {
@@ -51,7 +52,7 @@ define(['core/templates'], function(Templates) {
     /**
      * Get or create the root widget container.
      *
-     * @returns {HTMLElement}
+     * @returns {HTMLElement} The existing or newly created container element.
      */
     function getOrCreateContainer() {
         var container = document.getElementById('local-courseprogresspro');
@@ -70,7 +71,7 @@ define(['core/templates'], function(Templates) {
     /**
      * Move the widget container into the main course content area.
      *
-     * @param {HTMLElement} container
+     * @param {HTMLElement} container The widget root element to relocate.
      * @returns {void}
      */
     function moveToCourseContent(container) {
@@ -93,8 +94,8 @@ define(['core/templates'], function(Templates) {
     /**
      * Normalize a token for safe CSS class usage.
      *
-     * @param {string} value
-     * @returns {string}
+     * @param {string} value Raw token string to normalize.
+     * @returns {string} Lowercase alphanumeric string with hyphens and underscores only.
      */
     function normalizeToken(value) {
         return String(value || '').toLowerCase().replace(/[^a-z0-9_-]/g, '');
@@ -104,7 +105,7 @@ define(['core/templates'], function(Templates) {
      * Get localized labels for pending items.
      *
      * @param {Object} config Widget configuration.
-     * @returns {Object}
+     * @returns {Object} Object with available, locked and open label strings.
      */
     function getPendingLabels(config) {
         return {
@@ -118,7 +119,7 @@ define(['core/templates'], function(Templates) {
      * Get the normalized percentage value.
      *
      * @param {Object} config Widget configuration.
-     * @returns {number}
+     * @returns {number} Value clamped between 0 and 100.
      */
     function getNormalizedValue(config) {
         var rawvalue = config && Number.isFinite(Number(config.value)) ? Number(config.value) : 0;
@@ -131,7 +132,7 @@ define(['core/templates'], function(Templates) {
      *
      * @param {Object} config Widget configuration.
      * @param {Object} labels Localized labels.
-     * @returns {Array}
+     * @returns {Array} Array of pending item context objects.
      */
     function buildPendingItems(config, labels) {
         var items = config && Array.isArray(config.pendingitems) ? config.pendingitems : [];
@@ -142,30 +143,41 @@ define(['core/templates'], function(Templates) {
     }
 
     /**
+     * Resolve the display detail text for a pending item.
+     *
+     * @param {Object} item Raw pending item from config.
+     * @returns {string} The detail string to display.
+     */
+    function resolvePendingItemDetail(item) {
+        if (item && item.detail) {
+            return item.detail;
+        }
+        if (item && item.name) {
+            return item.name;
+        }
+        return '';
+    }
+
+    /**
      * Build the template context for one pending timeline item.
      *
-     * @param {Object} item
-     * @param {Object} labels
-     * @returns {Object}
+     * @param {Object} item Raw pending item data.
+     * @param {Object} labels Localized label strings.
+     * @returns {Object} Mustache context object for a single pending item.
      */
     function buildPendingItemContext(item, labels) {
         var available = Number(item && item.available) === 1;
         var url = item && item.url ? item.url : '';
-        var detail = '';
-
-        if (item && item.detail) {
-            detail = item.detail;
-        } else if (item && item.name) {
-            detail = item.name;
-        }
+        var statusClass = available ? 'is-available' : 'is-locked';
+        var statusLabel = available ? labels.available : labels.locked;
 
         return {
             name: item && item.name ? item.name : '',
-            detail: detail,
+            detail: resolvePendingItemDetail(item),
             type: item && item.type ? item.type : '',
             modname: normalizeToken(item && item.modname ? item.modname : ''),
-            status: available ? labels.available : labels.locked,
-            statusclass: available ? 'is-available' : 'is-locked',
+            status: statusLabel,
+            statusclass: statusClass,
             url: url,
             hasurl: !!url,
             linklabel: item && item.linklabel ? item.linklabel : labels.open,
@@ -174,22 +186,31 @@ define(['core/templates'], function(Templates) {
     }
 
     /**
-     * Build the full Mustache context for the widget.
+     * Build the progress bar context fields.
      *
-     * @param {Object} config
-     * @returns {Object}
+     * @param {Object} config Widget configuration.
+     * @param {number} value Normalized percentage value.
+     * @returns {Object} Partial Mustache context for the progress bar.
      */
-    function buildContext(config) {
-        var labels = getPendingLabels(config);
-        var value = getNormalizedValue(config);
-        var pendingitems = buildPendingItems(config, labels);
-
+    function buildProgressContext(config, value) {
         return {
             label: getConfigString(config, 'label'),
             value: value,
             percentage: value + '%',
             maxlabel: getConfigString(config, 'maxlabel') || '100%',
-            showpercentage: getConfigFlag(config, 'showpercentage', true),
+            showpercentage: getConfigFlag(config, 'showpercentage', true)
+        };
+    }
+
+    /**
+     * Build the modal and pending-items context fields.
+     *
+     * @param {Object} config Widget configuration.
+     * @param {Array} pendingitems Processed pending item context array.
+     * @returns {Object} Partial Mustache context for the modal section.
+     */
+    function buildModalContext(config, pendingitems) {
+        return {
             showpendingbutton: getConfigFlag(config, 'showpendingbutton', false),
             pendingbuttonlabel: getConfigString(config, 'pendingbuttonlabel'),
             pendingtitle: getConfigString(config, 'pendingtitle'),
@@ -201,9 +222,25 @@ define(['core/templates'], function(Templates) {
     }
 
     /**
+     * Build the full Mustache context for the widget.
+     *
+     * @param {Object} config Raw widget configuration object.
+     * @returns {Object} Complete Mustache context ready for template rendering.
+     */
+    function buildContext(config) {
+        var labels = getPendingLabels(config);
+        var value = getNormalizedValue(config);
+        var pendingitems = buildPendingItems(config, labels);
+        var progressCtx = buildProgressContext(config, value);
+        var modalCtx = buildModalContext(config, pendingitems);
+
+        return Object.assign({}, progressCtx, modalCtx);
+    }
+
+    /**
      * Hide the pending-items modal.
      *
-     * @param {HTMLElement} container
+     * @param {HTMLElement} container The widget root element.
      * @returns {void}
      */
     function closeModal(container) {
@@ -219,7 +256,7 @@ define(['core/templates'], function(Templates) {
     /**
      * Show the pending-items modal.
      *
-     * @param {HTMLElement} container
+     * @param {HTMLElement} container The widget root element.
      * @returns {void}
      */
     function openModal(container) {
@@ -235,7 +272,7 @@ define(['core/templates'], function(Templates) {
     /**
      * Bind modal open and close interactions once.
      *
-     * @param {HTMLElement} container
+     * @param {HTMLElement} container The widget root element.
      * @returns {void}
      */
     function bindModal(container) {
@@ -270,13 +307,13 @@ define(['core/templates'], function(Templates) {
     /**
      * Initialize and render the progress widget.
      *
-     * @param {Object} config
-     * @returns {Promise|undefined}
+     * @param {Object} config Raw widget configuration object.
+     * @returns {Promise|undefined} Promise resolving to the container element, or undefined if already initialized.
      */
     function init(config) {
         var container = getOrCreateContainer();
         if (container.dataset.initialized === '1') {
-            return;
+            return undefined;
         }
 
         container.dataset.initialized = '1';
