@@ -2,6 +2,12 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.26] - 2026-03-16
+
+### Changed
+
+- Replaced the modal card width strategy with `flex: 0 1 38rem` plus `max-width: 38rem` to preserve responsive sizing without relying on an explicit width declaration.
+
 ## [0.7.25] - 2026-03-15
 
 ### Changed
