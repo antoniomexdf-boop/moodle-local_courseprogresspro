@@ -64,3 +64,4 @@ Current release: `0.7.18` (`2026031511`)
 ## License
 
 GNU GPL v3 or later.
+
