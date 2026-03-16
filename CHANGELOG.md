@@ -2,7 +2,17 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.24] - 2026-03-15
+
+### Changed
+
+- Expanded PHPDoc coverage in `lib.php` and normalized JSDoc return annotations in `amd/src/progress.js` to better match Moodle review expectations.
+
 ## [0.7.23] - 2026-03-15
+
+### Changed
+
+- Hardened the release package for Moodle Plugins review by restoring explicit version metadata markers in `version.php` and adding a Moodle boilerplate header to the AMD build artifact.
 
 ### Fixed
 

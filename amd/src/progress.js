@@ -132,7 +132,7 @@ define(['core/templates'], function(Templates) {
      *
      * @param {Object} config Widget configuration.
      * @param {Object} labels Localized labels.
-     * @returns {Array} Array of pending item context objects.
+     * @returns {Array<Object>} Array of pending item context objects.
      */
     function buildPendingItems(config, labels) {
         var items = config && Array.isArray(config.pendingitems) ? config.pendingitems : [];
@@ -206,7 +206,7 @@ define(['core/templates'], function(Templates) {
      * Build the modal and pending-items context fields.
      *
      * @param {Object} config Widget configuration.
-     * @param {Array} pendingitems Processed pending item context array.
+     * @param {Array<Object>} pendingitems Processed pending item context array.
      * @returns {Object} Partial Mustache context for the modal section.
      */
     function buildModalContext(config, pendingitems) {
@@ -308,7 +308,7 @@ define(['core/templates'], function(Templates) {
      * Initialize and render the progress widget.
      *
      * @param {Object} config Raw widget configuration object.
-     * @returns {Promise|undefined} Promise resolving to the container element, or undefined if already initialized.
+     * @returns {(Promise<HTMLElement>|undefined)} Promise resolving to the container element, or undefined if already initialized.
      */
     function init(config) {
         var container = getOrCreateContainer();

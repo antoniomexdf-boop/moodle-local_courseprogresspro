@@ -25,9 +25,9 @@
 /**
  * Gets a plugin setting with fallback.
  *
- * @param string $name
- * @param mixed $default
- * @return mixed
+ * @param string $name Setting name without component prefix.
+ * @param mixed $default Fallback value when the stored config is empty.
+ * @return mixed Stored config value or the provided fallback.
  */
 function local_courseprogresspro_get_setting(string $name, $default) {
     $value = get_config('local_courseprogresspro', $name);
@@ -64,9 +64,9 @@ function local_courseprogresspro_should_render(): bool {
 /**
  * Builds the progress snapshot for the current user.
  *
- * @param stdClass $course
- * @param int $userid
- * @return array
+ * @param stdClass $course Course record for the active page.
+ * @param int $userid User ID to evaluate.
+ * @return array Snapshot with completed units, total units, percentage, and pending items.
  */
 function local_courseprogresspro_get_snapshot(stdClass $course, int $userid): array {
     require_once(__DIR__ . '/../../lib/completionlib.php');
@@ -125,10 +125,10 @@ function local_courseprogresspro_get_snapshot(stdClass $course, int $userid): ar
 /**
  * Builds the main progress snapshot using Moodle completion data only.
  *
- * @param course_modinfo $modinfo
- * @param completion_info $completioninfo
- * @param int $userid
- * @return array
+ * @param course_modinfo $modinfo Fast module information for the course.
+ * @param completion_info $completioninfo Moodle completion manager instance.
+ * @param int $userid User ID to evaluate.
+ * @return array Snapshot array containing completed and total completion-enabled modules.
  */
 function local_courseprogresspro_get_moodle_progress_snapshot(
     course_modinfo $modinfo,
@@ -186,8 +186,8 @@ function local_courseprogresspro_should_count_cm(cm_info $cm, array $settings): 
 /**
  * Returns whether the module is treated as a resource item.
  *
- * @param cm_info $cm
- * @return bool
+ * @param cm_info $cm Course module information.
+ * @return bool True when the module belongs to the configured resource set.
  */
 function local_courseprogresspro_is_resource_cm(cm_info $cm): bool {
     return in_array($cm->modname, ['resource', 'url', 'page', 'book', 'folder'], true);
@@ -196,8 +196,8 @@ function local_courseprogresspro_is_resource_cm(cm_info $cm): bool {
 /**
  * Returns whether the module is not yet visible to the user due to availability.
  *
- * @param cm_info $cm
- * @return bool
+ * @param cm_info $cm Course module information.
+ * @return bool True when availability conditions still hide the module from the user.
  */
 function local_courseprogresspro_is_pending_visibility(cm_info $cm): bool {
     return !$cm->uservisible;
@@ -206,9 +206,9 @@ function local_courseprogresspro_is_pending_visibility(cm_info $cm): bool {
 /**
  * Builds one pending timeline item.
  *
- * @param cm_info $cm
- * @param string $detail
- * @return array
+ * @param cm_info $cm Course module information.
+ * @param string $detail User-facing pending detail text.
+ * @return array Pending item data for the Mustache timeline context.
  */
 function local_courseprogresspro_build_pending_item(cm_info $cm, string $detail): array {
     $available = !local_courseprogresspro_is_pending_visibility($cm);
@@ -241,11 +241,11 @@ function local_courseprogresspro_build_pending_item(cm_info $cm, string $detail)
 /**
  * Gets progress units for one course module.
  *
- * @param cm_info $cm
- * @param int $userid
- * @param completion_info $completioninfo
- * @param array $settings
- * @return array
+ * @param cm_info $cm Course module information.
+ * @param int $userid User ID to evaluate.
+ * @param completion_info $completioninfo Moodle completion manager instance.
+ * @param array $settings Plugin calculation settings.
+ * @return array Progress units and pending detail for the module.
  */
 function local_courseprogresspro_get_cm_progress(
     cm_info $cm,
@@ -284,9 +284,9 @@ function local_courseprogresspro_get_cm_progress(
 /**
  * Gets quiz progress using the question count as total units.
  *
- * @param cm_info $cm
- * @param int $userid
- * @return array
+ * @param cm_info $cm Quiz course module information.
+ * @param int $userid User ID to evaluate.
+ * @return array Quiz progress expressed as completed and total question units.
  */
 function local_courseprogresspro_get_quiz_progress(cm_info $cm, int $userid): array {
     global $DB;
@@ -348,10 +348,10 @@ function local_courseprogresspro_get_quiz_progress(cm_info $cm, int $userid): ar
 /**
  * Determines whether a non-quiz course module can be treated as completed.
  *
- * @param cm_info $cm
- * @param int $userid
- * @param completion_info $completioninfo
- * @return bool
+ * @param cm_info $cm Course module information.
+ * @param int $userid User ID to evaluate.
+ * @param completion_info $completioninfo Moodle completion manager instance.
+ * @return bool True when the module has completion evidence for the user.
  */
 function local_courseprogresspro_is_cm_completed(
     cm_info $cm,
@@ -427,7 +427,7 @@ function local_courseprogresspro_is_cm_completed(
 /**
  * Queue required assets.
  *
- * @param stdClass $course
+ * @param stdClass $course Course record for the active page.
  * @return void
  */
 function local_courseprogresspro_bootstrap(stdClass $course): void {
@@ -488,9 +488,9 @@ function local_courseprogresspro_before_standard_top_of_body_html(): string {
 /**
  * Fallback hook to always load assets in course pages.
  *
- * @param global_navigation $navigation
- * @param stdClass $course
- * @param context_course $context
+ * @param global_navigation $navigation Course navigation object.
+ * @param stdClass $course Course record.
+ * @param context_course $context Course context instance.
  * @return void
  */
 function local_courseprogresspro_extend_navigation_course($navigation, $course, $context): void {
