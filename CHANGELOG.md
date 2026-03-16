@@ -2,6 +2,12 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.25] - 2026-03-15
+
+### Changed
+
+- Restored standard Moodle execution guards in `lib.php` and the privacy provider, and expanded the AMD build boilerplate to better align with plugin-directory review expectations.
+
 ## [0.7.24] - 2026-03-15
 
 ### Changed
