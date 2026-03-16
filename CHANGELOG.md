@@ -2,6 +2,12 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.28] - 2026-03-16
+
+### Fixed
+
+- Moved the privacy provider namespace declaration to the correct position before executable code and refreshed the AMD build pair for a new review upload.
+
 ## [0.7.27] - 2026-03-16
 
 ### Fixed

@@ -1,4 +1,6 @@
 <?php
+namespace local_courseprogresspro\privacy;
+
 // This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
@@ -15,8 +17,6 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 defined('MOODLE_INTERNAL') || die();
-
-namespace local_courseprogresspro\privacy;
 
 use core_privacy\local\metadata\null_provider;
 
