@@ -24,20 +24,18 @@
 
 namespace local_courseprogresspro\privacy;
 
-defined('MOODLE_INTERNAL') || die();
-
 use core_privacy\local\metadata\null_provider;
 
-
-class provider implements null_provider
-{
+/**
+ * Privacy API provider for local_courseprogresspro.
+ */
+class provider implements null_provider {
     /**
      * Returns reason why this plugin has no personal data.
      *
      * @return string
      */
-    public static function get_reason(): string
-    {
+    public static function get_reason(): string {
         return 'privacy:metadata';
     }
 }
