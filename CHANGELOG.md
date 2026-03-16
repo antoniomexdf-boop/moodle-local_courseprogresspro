@@ -2,6 +2,18 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.34] - 2026-03-16
+
+### Changed
+
+- Removed redundant comments that did not contribute to Moodle validation, including the extra plugin-type note in `version.php` and the duplicated class description line in the privacy provider.
+
+## [0.7.33] - 2026-03-16
+
+### Changed
+
+- Removed duplicated metadata tags from the class-level docblock in `classes/privacy/provider.php` while keeping the file-level boilerplate and functional description.
+
 ## [0.7.32] - 2026-03-16
 
 ### Fixed
