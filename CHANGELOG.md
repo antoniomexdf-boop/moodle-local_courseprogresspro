@@ -2,6 +2,18 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.20] - 2026-03-15
+
+### Fixed
+
+- Removed a duplicated `width: 100%` declaration introduced while consolidating the latest stylesheet fixes.
+
+## [0.7.19] - 2026-03-15
+
+### Fixed
+
+- Unified the AMD source with the latest manual review improvements and restored the modal card `width: 100%` style needed for the reported stylelint issue.
+
 ## [0.7.18] - 2026-03-15
 
 ### Fixed

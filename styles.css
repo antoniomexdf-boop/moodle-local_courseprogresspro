@@ -115,6 +115,7 @@
 
 .local-courseprogresspro__modal-card {
     position: relative;
+    width: 100%;
     max-width: 38rem;
     max-height: 80vh;
     overflow: auto;
