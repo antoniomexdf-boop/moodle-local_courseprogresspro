@@ -34,7 +34,6 @@
 }
 
 .local-courseprogresspro__track {
-    width: 100%;
     height: 0.9rem;
     overflow: hidden;
     border-radius: 999px;
@@ -115,7 +114,6 @@
 
 .local-courseprogresspro__modal-card {
     position: relative;
-    width: 100%;
     max-width: 38rem;
     max-height: 80vh;
     overflow: auto;

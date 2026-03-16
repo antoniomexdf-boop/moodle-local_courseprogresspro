@@ -2,6 +2,12 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.23] - 2026-03-15
+
+### Fixed
+
+- Removed the explicit `width` declaration from the modal card to use the most conservative CSS form for plugin-directory validation.
+
 ## [0.7.21] - 2026-03-15
 
 ### Changed
