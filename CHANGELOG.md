@@ -2,6 +2,12 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.30] - 2026-03-16
+
+### Fixed
+
+- Removed the extra execution guard from the privacy provider and refreshed the AMD build pair for another validation upload.
+
 ## [0.7.29] - 2026-03-16
 
 ### Fixed

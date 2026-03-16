@@ -16,8 +16,6 @@ namespace local_courseprogresspro\privacy;
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-defined('MOODLE_INTERNAL') || die();
-
 use core_privacy\local\metadata\null_provider;
 
 /**
