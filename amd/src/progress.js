@@ -19,7 +19,7 @@
  * @module     local_courseprogresspro/progress
  * @copyright  2026 Jesus Antonio Jimenez Avina <antoniomexdf@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
- */
+ **/
 define(['core/templates'], function(Templates) {
 
     /**
@@ -28,7 +28,7 @@ define(['core/templates'], function(Templates) {
      * @param {Object} config Widget configuration.
      * @param {string} key Configuration key.
      * @returns {string} The configuration string value or empty string.
-     */
+     **/
     function getConfigString(config, key) {
         return config && config[key] ? config[key] : '';
     }
@@ -40,7 +40,7 @@ define(['core/templates'], function(Templates) {
      * @param {string} key Configuration key.
      * @param {boolean} fallback Default value when key is absent.
      * @returns {boolean} True when the flag value equals 1.
-     */
+     **/
     function getConfigFlag(config, key, fallback) {
         if (!config || typeof config[key] === 'undefined') {
             return fallback;
@@ -53,7 +53,7 @@ define(['core/templates'], function(Templates) {
      * Get or create the root widget container.
      *
      * @returns {HTMLElement} The existing or newly created container element.
-     */
+     **/
     function getOrCreateContainer() {
         var container = document.getElementById('local-courseprogresspro');
         if (container) {
@@ -73,7 +73,7 @@ define(['core/templates'], function(Templates) {
      *
      * @param {HTMLElement} container The widget root element to relocate.
      * @returns {void}
-     */
+     **/
     function moveToCourseContent(container) {
         var selectors = [
             '#region-main',
@@ -96,7 +96,7 @@ define(['core/templates'], function(Templates) {
      *
      * @param {string} value Raw token string to normalize.
      * @returns {string} Lowercase alphanumeric string with hyphens and underscores only.
-     */
+     **/
     function normalizeToken(value) {
         return String(value || '').toLowerCase().replace(/[^a-z0-9_-]/g, '');
     }
@@ -106,7 +106,7 @@ define(['core/templates'], function(Templates) {
      *
      * @param {Object} config Widget configuration.
      * @returns {Object} Object with available, locked and open label strings.
-     */
+     **/
     function getPendingLabels(config) {
         return {
             available: getConfigString(config, 'pendingstatusavailable'),
@@ -120,7 +120,7 @@ define(['core/templates'], function(Templates) {
      *
      * @param {Object} config Widget configuration.
      * @returns {number} Value clamped between 0 and 100.
-     */
+     **/
     function getNormalizedValue(config) {
         var rawvalue = config && Number.isFinite(Number(config.value)) ? Number(config.value) : 0;
 
@@ -133,7 +133,7 @@ define(['core/templates'], function(Templates) {
      * @param {Object} config Widget configuration.
      * @param {Object} labels Localized labels.
      * @returns {Array} Array of pending item context objects.
-     */
+     **/
     function buildPendingItems(config, labels) {
         var items = config && Array.isArray(config.pendingitems) ? config.pendingitems : [];
 
@@ -147,7 +147,7 @@ define(['core/templates'], function(Templates) {
      *
      * @param {Object} item Raw pending item from config.
      * @returns {string} The detail string to display.
-     */
+     **/
     function resolvePendingItemDetail(item) {
         if (item && item.detail) {
             return item.detail;
@@ -164,7 +164,7 @@ define(['core/templates'], function(Templates) {
      * @param {Object} item Raw pending item data.
      * @param {Object} labels Localized label strings.
      * @returns {Object} Mustache context object for a single pending item.
-     */
+     **/
     function buildPendingItemContext(item, labels) {
         var available = Number(item && item.available) === 1;
         var url = item && item.url ? item.url : '';
@@ -191,7 +191,7 @@ define(['core/templates'], function(Templates) {
      * @param {Object} config Widget configuration.
      * @param {number} value Normalized percentage value.
      * @returns {Object} Partial Mustache context for the progress bar.
-     */
+     **/
     function buildProgressContext(config, value) {
         return {
             label: getConfigString(config, 'label'),
