@@ -2,6 +2,12 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.38] - 2026-03-16
+
+### Changed
+
+- Accepted the latest manual AMD rebuild, verified the source/build/sourcemap consistency, and prepared a fresh distribution package for repository upload.
+
 ## [0.7.37] - 2026-03-16
 
 ### Changed
