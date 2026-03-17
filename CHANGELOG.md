@@ -2,7 +2,7 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
-## [0.7.38] - 2026-03-16
+## [0.7.39] - 2026-03-16
 
 ### Changed
 
