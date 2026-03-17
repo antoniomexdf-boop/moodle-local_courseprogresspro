@@ -2,7 +2,7 @@
 
 Pro edition of Course Progress for Moodle.
 
-Current release: `0.7.39` (`2026031613`)
+Current release: `0.7.41` (`2026031615`)
 
 ## Repository
 
@@ -58,9 +58,14 @@ Current release: `0.7.39` (`2026031613`)
 
 ## Screenshots
 
-![Pro progress bar](screenshots/courseprogresspro_01.png)
-![Pro progress bar alternate view](screenshots/courseprogresspro_02.png)
-![Pro pending timeline](screenshots/courseprogresspro_03.png)
+1. Plugin configuration page with the main admin settings.
+![Pro plugin settings](screenshots/courseprogresspro_01.png)
+
+2. Pending actions modal with direct links, resource-type badges, and availability labels.
+![Pro pending timeline modal](screenshots/courseprogresspro_02.png)
+
+3. Student-facing progress widget with Moodle-aligned progress and pending-actions summary button.
+![Pro progress widget](screenshots/courseprogresspro_03.png)
 
 ## License
 

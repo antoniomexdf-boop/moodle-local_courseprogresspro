@@ -78,5 +78,16 @@ No personal data is stored.
 
 ## Release
 
-- Release: `0.7.39`
-- Version: `2026031613`
+- Release: `0.7.41`
+- Version: `2026031615`
+
+## Screenshot Guide
+
+1. `courseprogresspro_01.png`
+Shows the plugin configuration page with the available admin settings.
+
+2. `courseprogresspro_02.png`
+Shows the pending-actions modal with the timeline layout, direct links to activities, activity-type badges, and availability indicators.
+
+3. `courseprogresspro_03.png`
+Shows the student-facing progress widget with the main course progress bar and the pending-actions summary button.

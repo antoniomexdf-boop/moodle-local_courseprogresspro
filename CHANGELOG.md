@@ -2,11 +2,23 @@
 
 All notable changes to `local_courseprogresspro` are documented in this file.
 
+## [0.7.41] - 2026-03-16
+
+### Changed
+
+- Synced the latest screenshots from the GitHub-ready repository copy, updated the documentation to describe each screenshot accurately, and prepared a fresh package for GitHub and Moodle submission.
+
+## [0.7.40] - 2026-03-16
+
+### Changed
+
+- Finalized the current validated code state, refreshed release metadata, and prepared a clean installation package for screenshot capture.
+
 ## [0.7.39] - 2026-03-16
 
 ### Changed
 
-- Accepted the latest manual AMD rebuild, verified the source/build/sourcemap consistency, and prepared a fresh distribution package for repository upload.
+- Registered another manual AMD rebuild iteration, rechecked the build/sourcemap consistency, and refreshed the release package metadata.
 
 ## [0.7.37] - 2026-03-16
 
